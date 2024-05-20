@@ -1,0 +1,156 @@
+﻿@using Cs_Risk_Assessment.Enums;
+@using Cs_Risk_Assessment.Statics;
+@model ApplicationUser
+@{
+	ViewData["Title"] = "Profile";
+	Layout = "~/Views/Shared/_templateLayout.cshtml";
+}
+
+@section OtherHeadContent {
+	<style>
+		.select2-selection
+		{
+			border: 0 !important;
+		}
+
+		.selection
+		{
+			border: 1px solid var(--bs-border-color);
+			border-radius: var(--bs-border-radius);
+			display: block;
+			padding: .3rem .85rem;
+		}
+	</style>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+}
+<div class="mb-3">
+	<h1 class="h3 d-inline align-middle">Profile</h1>
+</div>
+<div class="row">
+	
+	<div class="col-md-12 col-xl-12">
+		<div class="card">
+			<div class="card-header">
+
+				<h5 class="card-title mb-0">Profile</h5>
+			</div>
+			<div class="card-body h-100">
+				<form id="updateProfileForm">
+					<div class="row">
+						<div class="col-6">
+							<div class="mb-3">
+								<label class="form-label">Full Name</label>
+								<input class="form-control form-control-lg" type="text" name="FullName" value="@Model.FullName" />
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="mb-3">
+								<label class="form-label">Email</label>
+								<input class="form-control form-control-lg" type="email" name="Email" value="@Model.Email" disabled/>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-6">
+							<div class="mb-3">
+								<label class="form-label">Organization Name</label>
+								<input class="form-control form-control-lg" type="text" name="OrganizationName" value="@Model.OrganizationName" />
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="mb-3">
+								<label class="form-label">Organization Type</label>
+								<select title="OrganizationType" class="form-control form-control-lg" name="OrganizationType" required>
+									@foreach (var type in Enum.GetValues(typeof(OrganizationType)))
+									{
+										@if(type.ToString() == Model.OrganizationType.ToString())
+										{
+											<option value="@type" selected>@type</option>
+										}
+										else
+										{
+											<option value="@type">@type</option>
+										}
+									}
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Country</label>
+						<select id="countrySelect" class="form-control form-control-lg" name="Country" required>
+							@foreach (var country in Countries.GetCountries())
+							{
+								@if (country.Name== Model.Country)
+								{
+									<option value="@country.Name" selected>@country.Name</option>
+								}
+								else
+								{
+									<option value="@country.Name">@country.Name</option>
+								}
+							}
+						</select>
+					</div>
+					
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+				<hr />
+
+					<div class="d-grid gap-2 mt-3">
+						<button type="submit" class="btn btn-lg btn-primary">Update Profile</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@section OtherPageScripts
+{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#countrySelect').select2();
+		});
+	</script>
+	<script>
+		$(function () {
+			$('#updateProfileForm').submit(function (event) {
+				event.preventDefault();
+
+				var formData = new FormData(this); // Create FormData object from the form
+				var token = $('input[name="__RequestVerificationToken"]').val(); // Get the anti-forgery token value
+
+				// Append the anti-forgery token to the FormData object
+				formData.append('__RequestVerificationToken', token);
+
+				$.ajax({
+					url: '/Profile/UpdateProfile', // Change the URL to match your controller action
+					type: 'POST',
+					data: formData, // Use the FormData object containing the form data and token
+					processData: false, // Prevent jQuery from automatically processing the data
+					contentType: false, // Prevent jQuery from automatically setting the content type
+					success: function (response) {
+						if (response.success) {
+							SuccessToast(response.message);
+							setTimeout(function () {
+								location.reload();
+							}, 2000);
+						} else {
+							console.log("Fail");
+							ErrorToast(response.message);
+						}
+					},
+					error: function () {
+						ErrorToast("Error Occurred");
+					}
+				});
+			});
+		});
+
+	</script>
+}

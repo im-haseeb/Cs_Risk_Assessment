@@ -1,0 +1,178 @@
+﻿
+@using System.Security.Claims
+
+
+@{
+	var fullName = User.FindFirstValue("LoggedInUserName");
+	string currentController = ViewContext.RouteData.Values["controller"].ToString();
+}
+
+@* @foreach (var claim in User.Claims)
+{
+	<p>@claim.Type: @claim.Value</p>
+} *@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Core Identity">
+	<meta name="author" content="Haseeb">
+	<meta name="keywords" content="mhaseebali.com, Haseeb, Muhammad Haseeb Ali">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link rel="shortcut icon" href="~/template/img/icons/icon-48x48.png" />
+
+	<link rel="canonical" href="https://demo-basic.mhaseebali.com/" />
+
+    <title>@ViewData["Title"] - Identity_Core</title>
+
+	<link href="~/template/css/app.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+	@RenderSection("OtherHeadContent", required: false)
+</head>
+<body>
+	<div class="wrapper">
+		<nav id="sidebar" class="sidebar js-sidebar">
+			<div class="sidebar-content js-simplebar">
+				<a class="sidebar-brand" href="/">
+					<span class="align-middle">Core</span>
+				</a>
+
+				<ul class="sidebar-nav">
+					<li class="sidebar-header">
+						Pages
+					</li>
+
+					<li class="sidebar-item @(currentController == "Home" ? "active" : "")">
+						<a class="sidebar-link" href="/">
+							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+						</a>
+					</li>
+
+					<li class="sidebar-item @(currentController == "Profile" ? "active" : "")">
+						<a class="sidebar-link" href="/Profile">
+							<i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
+						</a>
+					</li>
+
+				</ul>
+			</div>
+		</nav>
+
+		<div class="main">
+			<nav class="navbar navbar-expand navbar-light navbar-bg">
+				<a class="sidebar-toggle js-sidebar-toggle">
+					<i class="hamburger align-self-center"></i>
+				</a>
+
+				<div class="navbar-collapse collapse">
+					<ul class="navbar-nav navbar-align">
+						<li class="nav-item dropdown">
+							<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
+								<i class="align-middle" data-feather="settings"></i>
+							</a>
+
+							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
+								<img src="~/template/img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span class="text-dark">@fullName</span>
+							</a>
+							<div class="dropdown-menu dropdown-menu-end">
+								<a class="dropdown-item" href="/Profile"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="index.html"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
+								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a>
+								<div class="dropdown-divider"></div>
+								<div class="dropdown-item">
+									<form asp-controller="Account" asp-action="Logout" method="post">
+										@Html.AntiForgeryToken()
+										<button class="btn btn-danger" type="submit">Logout</button>
+									</form>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</nav>
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					@RenderBody()
+
+				</div>
+			</main>
+
+			<footer class="footer">
+				<div class="container-fluid">
+					<div class="row text-muted">
+						<div class="col-6 text-start">
+							<p class="mb-0">
+								<a class="text-muted" href="https://mhaseebali.com/" target="_blank"><strong>Core Identity</strong></a> - <a class="text-muted" href="https://mhaseebali.com/" target="_blank"><strong>Created By Haseeb</strong></a>								&copy;
+							</p>
+						</div>
+						<div class="col-6 text-end">
+							<ul class="list-inline">
+								<li class="list-inline-item">
+									<a class="text-muted" href="https://mhaseebali.com/" target="_blank">Support</a>
+								</li>
+								<li class="list-inline-item">
+									<a class="text-muted" href="https://mhaseebali.com/" target="_blank">Help Center</a>
+								</li>
+								<li class="list-inline-item">
+									<a class="text-muted" href="https://mhaseebali.com/" target="_blank">Privacy</a>
+								</li>
+								<li class="list-inline-item">
+									<a class="text-muted" href="https://mhaseebali.com/" target="_blank">Terms</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="~/template/js/app.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<script>
+
+		const Toast = Swal.mixin({
+			toast: true,
+			position: "top-end",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+			didOpen: (toast) => {
+				toast.onmouseenter = Swal.stopTimer;
+				toast.onmouseleave = Swal.resumeTimer;
+			}
+		});
+		
+		function SuccessToast(message) {
+			Toast.fire({
+				icon: "success",
+				title: message
+			});
+		}
+		function ErrorToast(message) {
+			Toast.fire({
+				icon: "error",
+				title: message
+			});
+		}
+	</script>
+   
+	@RenderSection("OtherPageScripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
