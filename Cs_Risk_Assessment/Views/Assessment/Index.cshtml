@@ -1,0 +1,90 @@
+﻿@using Cs_Risk_Assessment.Statics;
+@{
+	ViewData["Title"] = "Assessment";
+	Layout = "~/Views/Shared/_templateLayout.cshtml";
+}
+
+@section OtherHeadContent {
+<style>
+		table {
+			width: 200px;
+			border-collapse: collapse;
+			border: 1px solid #000;
+		}
+
+		th, td {
+			padding: 8px;
+			text-align: left;
+			border: 1px solid #000;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+
+		td input
+		{
+			width:150px;
+		}
+</style>
+}
+
+
+<div class="card">
+	<div class="card-body">
+		<h1>Hardware Assets</h1>
+		@foreach (var item in AssetCategories.HardwareAssets.Items)
+		{
+			<input type="checkbox" id="@item" name="@item" value="@item">
+			<label for="@item">@item</label>
+
+			<table class="mt-2">
+				<thead>
+					<tr>
+						<th>Asset name</th>
+						<th>Asset type</th>
+						<th>Reference</th>
+						<th>Location of Asset</th>
+						<th>Asset owner</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="text"></td>
+						<td><input type="text"></td>
+						<td><input type="text"></td>
+						<td><input type="text"></td>
+						<td><input type="text"></td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+		}
+
+		<h1>Software Assets</h1>
+		@foreach (var item in AssetCategories.SoftwareAssets.Items)
+		{
+			<input type="checkbox" id="@item" name="@item" value="@item">
+			<label for="@item">@item</label>
+			<br>
+		}
+
+		<h1>Data Assets</h1>
+		@foreach (var item in AssetCategories.DataAssets.Items)
+		{
+			<input type="checkbox" id="@item" name="@item" value="@item">
+			<label for="@item">@item</label>
+			<br>
+		}
+
+		<h1>Software Assets</h1>
+		@foreach (var item in AssetCategories.ServicesAssets.Items)
+		{
+			<input type="checkbox" id="@item" name="@item" value="@item">
+			<label for="@item">@item</label>
+			<br>
+		}
+	</div>
+</div>
+
