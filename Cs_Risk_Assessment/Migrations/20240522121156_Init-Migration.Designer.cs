@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Identity_Core.Migrations
+namespace Cs_Risk_Assessment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240520131005_ColsUpdatedInApplicationUser1")]
-    partial class ColsUpdatedInApplicationUser1
+    [Migration("20240522121156_Init-Migration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

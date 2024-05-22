@@ -38,6 +38,8 @@ namespace Cs_Risk_Assessment.Models
 				.HasMaxLength(256)
 				.HasDefaultValue(null)
 				.IsConcurrencyToken();
+
+
 		}
 	}
 

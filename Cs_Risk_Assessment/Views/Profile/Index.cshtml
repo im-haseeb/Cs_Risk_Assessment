@@ -61,7 +61,7 @@
 						<div class="col-6">
 							<div class="mb-3">
 								<label class="form-label">Organization Type</label>
-								<select title="OrganizationType" class="form-control form-control-lg" name="OrganizationType" required>
+								<select id="organizationSelect" title="OrganizationType" class="form-control form-control-lg" name="OrganizationType" required>
 									@foreach (var type in Enum.GetValues(typeof(OrganizationType)))
 									{
 										@if(type.ToString() == Model.OrganizationType.ToString())
@@ -115,6 +115,9 @@
 	<script>
 		$(document).ready(function () {
 			$('#countrySelect').select2();
+		});
+		$(document).ready(function () {
+			$('#organizationSelect').select2();
 		});
 	</script>
 	<script>
