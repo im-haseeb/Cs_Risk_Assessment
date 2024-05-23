@@ -49,6 +49,14 @@ namespace Cs_Risk_Assessment
 				options.SlidingExpiration = true;
 			});
 
+			builder.Services.AddSession(options =>
+			{
+				// Configure session options
+				options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout duration
+				options.Cookie.HttpOnly = true; // Set HttpOnly flag for security
+				options.Cookie.IsEssential = true; // Set essential flag for session tracking
+			});
+
 			builder.Services.ConfigureApplicationCookie(options =>
 			{
 				options.LoginPath = "/Account/Login";
@@ -72,10 +80,12 @@ namespace Cs_Risk_Assessment
 
 			app.UseRouting();
 
+
 			app.UseAuthentication();
 
 			app.UseAuthorization();
 
+			app.UseSession();
 
 			app.MapControllerRoute(
 				name: "default",

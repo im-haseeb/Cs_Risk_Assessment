@@ -1,0 +1,71 @@
+﻿namespace Cs_Risk_Assessment.Statics
+{
+	using System.Collections.Generic;
+
+	public static class Threats
+	{
+		public static readonly List<string> ListOfThreats = new List<string>
+	{
+		"Breach of contractual relations",
+		"Breach of legislation",
+		"Damage caused by a third party",
+		"Damages resulting from penetration testing",
+		"Destruction of records",
+		"Eavesdropping",
+		"Embezzlement",
+		"Employees going on strike",
+		"Equipment malfunction",
+		"Failure of communication links",
+		"Falsification of records",
+		"Fraud from a cyber criminal",
+		"Fraud from an internal party",
+		"Improper disclosure of passwords",
+		"Improper disclosure of sensitive information",
+		"Industrial espionage",
+		"Interruption of business processes",
+		"Lack of data integrity",
+		"Loss of support services",
+		"Maintenance errors",
+		"Malicious code",
+		"Misuse of information systems",
+		"Natural or man-made disaster",
+		"Phishing scams",
+		"Power failure",
+		"Sensitive data being compromised",
+		"Social engineering",
+		"Terrorism threat",
+		"Theft of equipment",
+		"Theft of sensitive data",
+		"Unauthorized access to the information system",
+		"Unauthorized access to the network",
+		"Unauthorized changes of records",
+		"Unauthorized physical access",
+		"Unauthorized use of copyright material",
+		"Access to the network by unauthorized persons",
+		"Compromising confidential information",
+		"Concealing user identity",
+		"Disaster (human caused)",
+		"Disaster (natural)",
+		"Disclosure of information",
+		"Disclosure of passwords",
+		"Errors in maintenance",
+		"Fire",
+		"Flood",
+		"Fraud (general)",
+		"Information leakage",
+		"Loss of electricity",
+		"Misuse of audit tools",
+		"Pollution",
+		"Software errors",
+		"Terrorist attacks",
+		"Theft",
+		"Thunderstroke",
+		"Unintentional change of data in an information system",
+		"Unauthorized installation of software",
+		"Unauthorized use of software",
+		"User error",
+		"Vandalism"
+	};
+	}
+
+}

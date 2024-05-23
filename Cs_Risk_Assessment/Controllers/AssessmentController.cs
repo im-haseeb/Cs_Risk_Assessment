@@ -1,5 +1,8 @@
 ﻿using Cs_Risk_Assessment.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cs_Risk_Assessment.Controllers
 {
@@ -9,32 +12,46 @@ namespace Cs_Risk_Assessment.Controllers
 		{
 			return View();
 		}
+		public IActionResult Step2()
+		{
+			// Retrieve the data from session
+			string formDataJson = HttpContext.Session.GetString("Step2Data");
+
+			if (!string.IsNullOrEmpty(formDataJson))
+			{
+				List<AssetsViewModel> formData = JsonConvert.DeserializeObject<List<AssetsViewModel>>(formDataJson);
+
+				return View(formData);
+			}
+			else
+			{
+				// If session data is empty or data is not present, handle accordingly
+				// For example, redirect to an error view
+				return RedirectToAction("Error");
+			}
+		}
 
 		[HttpPost]
-		public async Task<IActionResult> Step2([FromForm] IFormCollection formData)
+		public IActionResult ProcessStep1([FromBody] List<AssetsViewModel> formData)
 		{
-			//return Json(formData);
-			List<AssetsViewModel> assetsList = new List<AssetsViewModel>();
-			if(formData.Any())
+			if(!formData.Any())
 			{
-				if(formData.Count > 1)
-				{
-					for(int i=0; i<=formData.First().Value.Count()-1; i++)
-					{
-						AssetsViewModel assetsViewModel = new AssetsViewModel
-						{
-							AssetName = formData["AssetName"][i],
-							AssetType = formData["AssetType"][i],
-							Reference = formData["Reference"][i],
-							Location = formData["Location"][i],
-							Owner = formData["Owner"][i],
-						};
-						assetsList.Add(assetsViewModel);
-					}
-					return View(assetsList);
-				}
+				return BadRequest("No form data provided."); // 400 Bad Request
 			}
-			return Json("Data not Found");
+			HttpContext.Session.SetString("Step2Data", JsonConvert.SerializeObject(formData));
+			return Ok(); // 200 OK
+		}
+
+		[HttpPost]
+		public IActionResult ProcessStep2([FromBody] List<AssetsViewModelWithThreats> formData)
+		{
+			return Json(formData);
+			if (!formData.Any())
+			{
+				return BadRequest("No form data provided."); // 400 Bad Request
+			}
+			HttpContext.Session.SetString("Step2Data", JsonConvert.SerializeObject(formData));
+			return Ok(); // 200 OK
 		}
 	}
 

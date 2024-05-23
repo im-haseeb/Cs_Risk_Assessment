@@ -27,6 +27,10 @@
 		{
 			width:150px;
 		}
+
+		.invalid-input {
+			border: 2px solid red; /* Red border for invalid input fields */
+		}
 </style>
 }
 
@@ -45,7 +49,8 @@
 	<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 		<div class="card">
 			<div class="card-body">
-				<form asp-controller="Assessment" asp-action="Step2" method="post">
+				@* <form asp-controller="Assessment" asp-action="Step2" method="post"> *@
+				<form>
 					<h1>Hardware Assets</h1>
 					@foreach (var item in AssetCategories.HardwareAssets.Items)
 					{
@@ -87,11 +92,13 @@
 
 					<a onclick="CreateCustomTable()" class="btn btn-primary mt-2">Add New Asset</a>
 
-					<div class="mt-4">
-						<button class="btn btn-info" type="submit">Next</button>
-					</div>
+					
 
 				</form>
+				<div class="mt-4">
+					@* <button class="btn btn-info" type="submit">Next</button> *@
+					<button class="btn btn-info" id="submitData">Next</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -103,6 +110,79 @@
 
 @section OtherPageScripts
 {
+	<script>
+		$(document).ready(function () {
+			$('#submitData').click(function (event) {
+				event.preventDefault(); // Prevent default button click behavior
+				var assetsData = [];
+				var isValid = true; // Flag to track form validation
+
+				// Iterate over each table
+				$('.assetTable').each(function () {
+					var $inputs = $(this).find('input[name="AssetName"], input[name="AssetType"], input[name="Reference"], input[name="Location"], input[name="Owner"]');
+					var isTableValid = true; // Flag to track table validation
+
+					// Check each input field in the table
+					$inputs.each(function () {
+						var $input = $(this);
+						var inputValue = $input.val();
+
+						if (!inputValue) {
+							// If input field is empty, mark table as invalid
+							isTableValid = false;
+							// Highlight the empty input field
+							$input.addClass('invalid-input');
+						} else {
+							// If input field is not empty, remove invalid class
+							$input.removeClass('invalid-input');
+						}
+					});
+
+					if (isTableValid) {
+						// If all input fields in the table are valid, construct assetData object
+						var assetData = {
+							AssetName: $(this).find('input[name="AssetName"]').val(),
+							AssetType: $(this).find('input[name="AssetType"]').val(),
+							Reference: $(this).find('input[name="Reference"]').val(),
+							Location: $(this).find('input[name="Location"]').val(),
+							Owner: $(this).find('input[name="Owner"]').val()
+							// Add other properties as needed
+						};
+						assetsData.push(assetData);
+					} else {
+						// If any input field in the table is empty, mark form as invalid
+						isValid = false;
+					}
+				});
+
+				// If form is valid, submit data to controller using AJAX
+				if (isValid) {
+					console.log(assetsData);
+					$.ajax({
+						url: '/Assessment/ProcessStep1',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify(assetsData),
+						success: function (response) {
+							console.log(response);
+							window.location.href = '/Assessment/step2';
+						},
+						error: function (xhr, status, error) {
+							console.log(status);
+							console.log(error);
+						}
+					});
+				}
+			});
+
+			// Remove 'invalid-input' class when user types in input field
+			$('.assetTable input').on('input', function () {
+				$(this).removeClass('invalid-input');
+			});
+		});
+
+	</script>
+
 	@* CheckBox Table *@
 	<script>
 		$(document).ready(function () {
@@ -111,7 +191,7 @@
 				var checkboxValue = $(this).attr('value');
 				var tableId = checkboxId.replace('chk_', 'table_');
 				var tableHtml = `
-						<table class="mt-2">
+							<table class="mt-2 assetTable">
 							<thead>
 								<tr>
 									<th>Asset name</th>
@@ -123,11 +203,11 @@
 							</thead>
 							<tbody>
 								<tr>
-										<td><input type="text" name="AssetName" value="${checkboxValue}" required></td>
-										<td><input type="text" name="AssetType" required></td>
-										<td><input type="text" name="Reference" required></td>
-										<td><input type="text" name="Location" required></td>
-										<td><input type="text" name="Owner" required></td>
+									<td><input type="text" name="AssetName" value="${checkboxValue}" required></td>
+									<td><input type="text" name="AssetType" required></td>
+									<td><input type="text" name="Reference" required></td>
+									<td><input type="text" name="Location" required></td>
+									<td><input type="text" name="Owner" required></td>
 								</tr>
 							</tbody>
 						</table>
@@ -150,7 +230,7 @@
 		function CreateCustomTable() {
 			var customTableList = document.getElementById("customTableList");
 			var tableHtml = `
-					<table class="mt-2">
+							<table class="mt-2 assetTable">
 						<thead>
 							<tr>
 								<th>Asset name</th>

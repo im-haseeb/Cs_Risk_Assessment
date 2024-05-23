@@ -1,12 +1,15 @@
-﻿@model IEnumerable<Cs_Risk_Assessment.ViewModels.AssetsViewModel>
+﻿@using Cs_Risk_Assessment.Statics;
+@model IEnumerable<Cs_Risk_Assessment.ViewModels.AssetsViewModel>
 @{
 	ViewData["Title"] = "Step2";
 	Layout = "~/Views/Shared/_templateLayout.cshtml";
 }
 
 @section OtherHeadContent {
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 	<style>
-		table {
+		/* table {
 			width:800px;
 			border-collapse: collapse;
 			border: 1px solid #000;
@@ -25,6 +28,40 @@
 
 		td input {
 			width: 150px;
+		} */
+
+		.card {
+			min-height: 100vh;
+		}
+		.table-container {
+			overflow-x: auto; /* Enable horizontal scrolling if table overflows */
+			max-width: 100%; /* Ensure table does not overflow its container */
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			border: 1px solid #000;
+		}
+
+		th, td {
+			padding: 8px;
+			text-align: left;
+			border: 1px solid #000;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		td input {
+			width: 100%; /* Make input fields adjust automatically with table size */
+			box-sizing: border-box; /* Ensure input width includes padding and border */
+		}
+
+		.bootstrap-select .dropdown-menu {
+			position: relative !important;
+			z-index: 9999 !important;  /* Set a high z-index value */
 		}
 	</style>
 }
@@ -45,7 +82,8 @@
 	<div class="tab-pane fade show active" id="step2" role="tabpanel" aria-labelledby="step2-tab">
 		<div class="card">
 			<div class="card-body">
-				<table class="mt-2">
+				<div class="table-container">
+				<table class="mt-2 assetTable">
 					<thead>
 						<tr>
 							<th>Asset name</th>
@@ -53,22 +91,37 @@
 							<th>Reference</th>
 							<th>Location of Asset</th>
 							<th>Asset owner</th>
+							<th>Threats</th>
 						</tr>
 					</thead>
 					<tbody>
 				@foreach(var item in Model)
 				{
-					
+					<form>
+
 					<tr>
-						<td>@item.AssetName</td>
-						<td>@item.AssetType</td>
-						<td>@item.Reference</td>
-						<td>@item.Location</td>
-						<td>@item.Owner</td>
+						<td><input type="text" name="AssetName" value="@item.AssetName" required disabled></td>
+						<td><input type="text" name="AssetType" value="@item.AssetType" required disabled></td>
+						<td><input type="text" name="Reference" value="@item.Reference" required disabled></td>
+						<td><input type="text" name="Location" value="@item.Location" required disabled></td>
+						<td><input type="text" name="Owner" value="@item.Owner" required disabled></td>
+						<td>
+							<select class="selectpicker" name="Threats" multiple data-live-search="true">
+								@foreach (var threat in Threats.ListOfThreats)
+								{	
+									<option value="@threat" >@threat</option>
+								}
+							</select>
+						</td>
 					</tr>
+					</form>
 				}
 					</tbody>
 				</table>
+				</div>
+				<div class="mt-4">
+					<button class="btn btn-info" id="submitData">Next</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -78,6 +131,94 @@
 
 
 @section OtherPageScripts
-	{
+{
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('.selectpicker').selectpicker();
+		});
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			$('#submitData').click(function (event) {
+				event.preventDefault(); // Prevent default button click behavior
+				var assetsData = [];
+				var isValid = true; // Flag to track form validation
+
+				// Iterate over each table
+				$('.assetTable tbody tr').each(function () {
+					var $inputs = $(this).find('input[name="AssetName"], input[name="AssetType"], input[name="Reference"], input[name="Location"], input[name="Owner"]');
+					var isTableValid = true; // Flag to track table validation
+
+					// Check each input field in the table
+					$inputs.each(function () {
+						var $input = $(this);
+						var inputValue = $input.val();
+
+						if (!inputValue) {
+							// If input field is empty, mark table as invalid
+							isTableValid = false;
+							// Highlight the empty input field
+							$input.addClass('invalid-input');
+						} else {
+							// If input field is not empty, remove invalid class
+							$input.removeClass('invalid-input');
+						}
+					});
+
+					if (isTableValid) {
+						// If all input fields in the table are valid, construct assetData object
+						var assetData = {
+							AssetName: $(this).find('input[name="AssetName"]').val(),
+							AssetType: $(this).find('input[name="AssetType"]').val(),
+							Reference: $(this).find('input[name="Reference"]').val(),
+							Location: $(this).find('input[name="Location"]').val(),
+							Owner: $(this).find('input[name="Owner"]').val(),
+							Threats: [],
+							// Add other properties as needed
+						};
+						// Retrieve selected threats from the multi-select dropdown
+						$(this).find('select[name="Threats"] option:selected').each(function () {
+							assetData.Threats.push($(this).val()); // Add the value of each selected option to the Threats array
+						});
+						assetsData.push(assetData);
+					} else {
+						// If any input field in the table is empty, mark form as invalid
+						isValid = false;
+					}
+				});
+
+				// If form is valid, submit data to controller using AJAX
+				if (isValid) {
+					console.log(assetsData);
+					$.ajax({
+						url: '/Assessment/ProcessStep2',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify(assetsData),
+						success: function (response) {
+							console.log(response.data);
+							// window.location.href = '/Assessment/step3';
+						},
+						error: function (xhr, status, error) {
+							console.log(status);
+							console.log(error);
+						}
+					});
+				}
+			});
+
+			// Remove 'invalid-input' class when user types in input field
+			$('.assetTable input').on('input', function () {
+				$(this).removeClass('invalid-input');
+			});
+		});
+
+	</script>
+
 }
 
