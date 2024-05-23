@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Cs_Risk_Assessment.ViewModels.AssetsViewModel>
+@{
+	ViewData["Title"] = "Step2";
+	Layout = "~/Views/Shared/_templateLayout.cshtml";
+}
+
+@section OtherHeadContent {
+	<style>
+		table {
+			width:800px;
+			border-collapse: collapse;
+			border: 1px solid #000;
+		}
+
+		th, td {
+			padding: 8px;
+			text-align: left;
+			border: 1px solid #000;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+
+		td input {
+			width: 150px;
+		}
+	</style>
+}
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+	<li class="nav-item" role="presentation">
+		<button class="nav-link disabled  " id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">List Of Assets</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link active" id="step2-tab" data-bs-toggle="pill" data-bs-target="#step2" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Vulnerability</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link disabled" id="step3" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Asset Initial Risk</button>
+	</li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+	@* <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div> *@
+	<div class="tab-pane fade show active" id="step2" role="tabpanel" aria-labelledby="step2-tab">
+		<div class="card">
+			<div class="card-body">
+				<table class="mt-2">
+					<thead>
+						<tr>
+							<th>Asset name</th>
+							<th>Asset type</th>
+							<th>Reference</th>
+							<th>Location of Asset</th>
+							<th>Asset owner</th>
+						</tr>
+					</thead>
+					<tbody>
+				@foreach(var item in Model)
+				{
+					
+					<tr>
+						<td>@item.AssetName</td>
+						<td>@item.AssetType</td>
+						<td>@item.Reference</td>
+						<td>@item.Location</td>
+						<td>@item.Owner</td>
+					</tr>
+				}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	@*@<div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div> *@
+</div>
+
+
+
+@section OtherPageScripts
+	{
+}
+
