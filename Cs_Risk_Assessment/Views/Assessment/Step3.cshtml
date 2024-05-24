@@ -1,7 +1,7 @@
 ﻿@using Cs_Risk_Assessment.Statics;
-@model IEnumerable<Cs_Risk_Assessment.ViewModels.AssetsViewModel>
+@model IEnumerable<Cs_Risk_Assessment.ViewModels.AssetsViewModelWithThreats>
 @{
-	ViewData["Title"] = "Step2";
+	ViewData["Title"] = "Step3";
 	Layout = "~/Views/Shared/_templateLayout.cshtml";
 }
 
@@ -13,6 +13,7 @@
 		.card {
 			min-height: 100vh;
 		}
+
 		.table-container {
 			overflow-x: auto; /* Enable horizontal scrolling if table overflows */
 			max-width: 100%; /* Ensure table does not overflow its container */
@@ -41,7 +42,7 @@
 
 		.bootstrap-select .dropdown-menu {
 			position: relative !important;
-			z-index: 9999 !important;  /* Set a high z-index value */
+			z-index: 9999 !important; /* Set a high z-index value */
 		}
 	</style>
 }
@@ -63,41 +64,71 @@
 		<div class="card">
 			<div class="card-body">
 				<div class="table-container">
-				<table class="mt-2 assetTable">
-					<thead>
-						<tr>
-							<th>Asset name</th>
-							<th>Asset type</th>
-							<th>Reference</th>
-							<th>Location of Asset</th>
-							<th>Asset owner</th>
-							<th>Threats</th>
-						</tr>
-					</thead>
-					<tbody>
-				@foreach(var item in Model)
-				{
-					<form>
+					<table class="mt-2 assetTable">
+						<thead>
+							<tr>
+								<th>Asset name</th>
+								<th>Asset type</th>
+								<th>Reference</th>
+								<th>Location of Asset</th>
+								<th>Asset owner</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model)
+							{
+								<form>
 
-					<tr>
-						<td><input type="text" name="AssetName" value="@item.AssetName" required disabled></td>
-						<td><input type="text" name="AssetType" value="@item.AssetType" required disabled></td>
-						<td><input type="text" name="Reference" value="@item.Reference" required disabled></td>
-						<td><input type="text" name="Location" value="@item.Location" required disabled></td>
-						<td><input type="text" name="Owner" value="@item.Owner" required disabled></td>
-						<td>
-							<select class="selectpicker" name="Threats" multiple data-live-search="true">
-								@foreach (var threat in Threats.ListOfThreats)
-								{	
-									<option value="@threat" >@threat</option>
-								}
-							</select>
-						</td>
-					</tr>
-					</form>
-				}
-					</tbody>
-				</table>
+								<tr>
+									<td><input type="text" name="AssetName" value="@item.AssetName" required disabled></td>
+									<td><input type="text" name="AssetType" value="@item.AssetType" required disabled></td>
+									<td><input type="text" name="Reference" value="@item.Reference" required disabled></td>
+									<td><input type="text" name="Location" value="@item.Location" required disabled></td>
+									<td><input type="text" name="Owner" value="@item.Owner" required disabled></td>
+									@* @if (item.Threats.Count == 1)
+									{	
+										<td></td>
+									}else
+									{ *@
+										<td>
+											<table class="mt-2 assetTable">
+												<thead>
+													<tr>
+														<th>Threats</th>
+														<th>Vulnerabilities</th>
+													</tr>
+												</thead>
+												@foreach(var threat in item.Threats)
+												{
+													<tr>
+														<td>@threat</td>
+													<td>
+														<select class="selectpicker" name="Threats" multiple data-live-search="true">
+																@foreach (var vul in Vulnerabilities.ListOfVulnerabilities)
+																{
+																<option value="@vul">@vul</option>
+																}
+														</select>
+													</td>
+													</tr>	
+												}
+											</table>
+										</td>
+									@* } *@
+									@* <td>
+										<select class="selectpicker" name="Threats" multiple data-live-search="true">
+												@foreach (var threat in Threats.ListOfThreats)
+												{
+												<option value="@threat">@threat</option>
+												}
+										</select>
+									</td> *@
+								</tr>
+								</form>
+							}
+						</tbody>
+					</table>
 				</div>
 				<div class="mt-4">
 					<button class="btn btn-info" id="submitData">Next</button>
@@ -111,7 +142,7 @@
 
 
 @section OtherPageScripts
-{
+	{
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
@@ -182,7 +213,7 @@
 						data: JSON.stringify(assetsData),
 						success: function (response) {
 							console.log(response.data);
-							window.location.href = '/Assessment/step3';
+							// window.location.href = '/Assessment/step3';
 						},
 						error: function (xhr, status, error) {
 							console.log(status);

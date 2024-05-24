@@ -31,6 +31,25 @@ namespace Cs_Risk_Assessment.Controllers
 			}
 		}
 
+		public IActionResult Step3()
+		{
+			// Retrieve the data from session
+			string formDataJson = HttpContext.Session.GetString("Step3Data");
+
+			if (!string.IsNullOrEmpty(formDataJson))
+			{
+				List<AssetsViewModelWithThreats> formData = JsonConvert.DeserializeObject<List<AssetsViewModelWithThreats>>(formDataJson);
+
+				return View(formData);
+			}
+			else
+			{
+				// If session data is empty or data is not present, handle accordingly
+				// For example, redirect to an error view
+				return RedirectToAction("Error");
+			}
+		}
+
 		[HttpPost]
 		public IActionResult ProcessStep1([FromBody] List<AssetsViewModel> formData)
 		{
@@ -45,12 +64,12 @@ namespace Cs_Risk_Assessment.Controllers
 		[HttpPost]
 		public IActionResult ProcessStep2([FromBody] List<AssetsViewModelWithThreats> formData)
 		{
-			return Json(formData);
+			//return Json(formData);
 			if (!formData.Any())
 			{
 				return BadRequest("No form data provided."); // 400 Bad Request
 			}
-			HttpContext.Session.SetString("Step2Data", JsonConvert.SerializeObject(formData));
+			HttpContext.Session.SetString("Step3Data", JsonConvert.SerializeObject(formData));
 			return Ok(); // 200 OK
 		}
 	}
