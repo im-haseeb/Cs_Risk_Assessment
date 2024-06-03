@@ -4,6 +4,7 @@ using Cs_Risk_Assessment.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cs_Risk_Assessment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240603082036_2tablesAddedchnages")]
+    partial class _2tablesAddedchnages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,7 +173,7 @@ namespace Cs_Risk_Assessment.Migrations
 
                     b.HasIndex("AssessmentId");
 
-                    b.ToTable("Assets");
+                    b.ToTable("Asset");
                 });
 
             modelBuilder.Entity("Cs_Risk_Assessment.Models.Threat", b =>
@@ -347,11 +350,9 @@ namespace Cs_Risk_Assessment.Migrations
 
             modelBuilder.Entity("Cs_Risk_Assessment.Models.Asset", b =>
                 {
-                    b.HasOne("Cs_Risk_Assessment.Models.Assessment", "Assessment")
+                    b.HasOne("Cs_Risk_Assessment.Models.Assessment", null)
                         .WithMany("Assets")
                         .HasForeignKey("AssessmentId");
-
-                    b.Navigation("Assessment");
                 });
 
             modelBuilder.Entity("Cs_Risk_Assessment.Models.Threat", b =>

@@ -9,6 +9,10 @@ namespace Cs_Risk_Assessment.Models
 			: base(options)
 		{
 		}
+		public DbSet<Assessment> Assessments { get; set; }
+		public DbSet<Threat> Threats { get; set; }
+		public DbSet<Asset> Assets { get; set; }
+
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

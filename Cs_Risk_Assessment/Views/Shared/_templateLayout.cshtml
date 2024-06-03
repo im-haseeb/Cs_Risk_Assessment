@@ -5,6 +5,7 @@
 @{
 	var fullName = User.FindFirstValue("LoggedInUserName");
 	string currentController = ViewContext.RouteData.Values["controller"].ToString();
+	string currentAction = ViewContext.RouteData.Values["action"].ToString();
 }
 
 @* @foreach (var claim in User.Claims)
@@ -55,9 +56,15 @@
 						</a>
 					</li>
 
-					<li class="sidebar-item @(currentController == "Assessment" ? "active" : "")">
+					<li class="sidebar-item @((currentController == "Assessment" && currentAction == "Index") ? " active" : "" )">
 						<a class="sidebar-link" href="/Assessment">
 							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Create Assessement</span>
+						</a>
+					</li>
+
+					<li class="sidebar-item @((currentController == "Assessment" && currentAction == "ViewAllAssessments") ? " active" : "" )">
+						<a class="sidebar-link" href="/Assessment/ViewAllAssessments">
+							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">View Assessements</span>
 						</a>
 					</li>
 

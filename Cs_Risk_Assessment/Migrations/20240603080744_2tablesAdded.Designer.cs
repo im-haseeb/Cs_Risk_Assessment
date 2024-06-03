@@ -4,6 +4,7 @@ using Cs_Risk_Assessment.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cs_Risk_Assessment.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240603080744_2tablesAdded")]
+    partial class _2tablesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,14 +119,25 @@ namespace Cs_Risk_Assessment.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AssetName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Owner")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -136,50 +150,13 @@ namespace Cs_Risk_Assessment.Migrations
                     b.ToTable("Assessments");
                 });
 
-            modelBuilder.Entity("Cs_Risk_Assessment.Models.Asset", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AssessmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Owner")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssessmentId");
-
-                    b.ToTable("Assets");
-                });
-
             modelBuilder.Entity("Cs_Risk_Assessment.Models.Threat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AssetId")
+                    b.Property<Guid?>("AssessmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateCreated")
@@ -198,7 +175,7 @@ namespace Cs_Risk_Assessment.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("AssessmentId");
 
                     b.ToTable("Threats");
                 });
@@ -345,22 +322,13 @@ namespace Cs_Risk_Assessment.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Cs_Risk_Assessment.Models.Asset", b =>
+            modelBuilder.Entity("Cs_Risk_Assessment.Models.Threat", b =>
                 {
                     b.HasOne("Cs_Risk_Assessment.Models.Assessment", "Assessment")
-                        .WithMany("Assets")
+                        .WithMany("Threats")
                         .HasForeignKey("AssessmentId");
 
                     b.Navigation("Assessment");
-                });
-
-            modelBuilder.Entity("Cs_Risk_Assessment.Models.Threat", b =>
-                {
-                    b.HasOne("Cs_Risk_Assessment.Models.Asset", "Asset")
-                        .WithMany("Threats")
-                        .HasForeignKey("AssetId");
-
-                    b.Navigation("Asset");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -420,11 +388,6 @@ namespace Cs_Risk_Assessment.Migrations
                 });
 
             modelBuilder.Entity("Cs_Risk_Assessment.Models.Assessment", b =>
-                {
-                    b.Navigation("Assets");
-                });
-
-            modelBuilder.Entity("Cs_Risk_Assessment.Models.Asset", b =>
                 {
                     b.Navigation("Threats");
                 });

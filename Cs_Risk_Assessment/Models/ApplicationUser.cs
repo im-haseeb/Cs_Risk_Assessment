@@ -9,5 +9,6 @@ namespace Cs_Risk_Assessment.Models
 		public string? OrganizationName { get; set; }
 		public OrganizationType OrganizationType { get; set; }
 		public string? Country { get; set; }
-	}
+        public ICollection<Assessment>? Assessments { get; set; }
+    }
 }
