@@ -62,6 +62,25 @@ namespace Cs_Risk_Assessment.Controllers
 			}
 		}
 
+		public IActionResult Step4()
+		{
+			// Retrieve the data from session
+			string formDataJson = HttpContext.Session.GetString("Step4Data");
+
+			if (!string.IsNullOrEmpty(formDataJson))
+			{
+				List<AssetsViewModelWithThreatsAndVulnerabilities> formData = JsonConvert.DeserializeObject<List<AssetsViewModelWithThreatsAndVulnerabilities>>(formDataJson);
+
+				return View(formData);
+			}
+			else
+			{
+				// If session data is empty or data is not present, handle accordingly
+				// For example, redirect to an error view
+				return RedirectToAction("Error");
+			}
+		}
+
 		[HttpPost]
 		public IActionResult ProcessStep1([FromBody] List<AssetsViewModel> formData)
 		{
@@ -69,6 +88,7 @@ namespace Cs_Risk_Assessment.Controllers
 			{
 				return BadRequest("No form data provided."); // 400 Bad Request
 			}
+			formData = formData.Where(asset => asset != null && asset.AssetName != "").ToList();
 			HttpContext.Session.SetString("Step2Data", JsonConvert.SerializeObject(formData));
 			return Ok(); // 200 OK
 		}
@@ -81,6 +101,7 @@ namespace Cs_Risk_Assessment.Controllers
 			{
 				return BadRequest("No form data provided."); // 400 Bad Request
 			}
+			formData = formData.Where(asset => asset != null && asset.AssetName != "").ToList();
 			HttpContext.Session.SetString("Step3Data", JsonConvert.SerializeObject(formData));
 			return Ok(); // 200 OK
 		}
@@ -88,54 +109,62 @@ namespace Cs_Risk_Assessment.Controllers
         [HttpPost]
         public async Task<IActionResult> ProcessStep3([FromBody] List<AssetsViewModelWithThreatsAndVulnerabilities> formData)
         {
-			var user = await _userManager.GetUserAsync(User);
-			if (user == null)
+			if (!formData.Any())
 			{
-				return NotFound();
+				return BadRequest("No form data provided."); // 400 Bad Request
 			}
-
-			// Filter out empty objects
 			formData = formData.Where(asset => asset != null && asset.AssetName != "").ToList();
+			HttpContext.Session.SetString("Step4Data", JsonConvert.SerializeObject(formData));
+			return Ok(); // 200 OK
 
-			if(formData.Any())
-			{
-				var newAssessment = new Assessment
-				{
-					// Generate a readable name using the current date and time
-					Name = "Assessment_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"),
-					UserId = user.Id,
-				};
+			//var user = await _userManager.GetUserAsync(User);
+			//if (user == null)
+			//{
+			//	return NotFound();
+			//}
 
-				_context.Assessments.Add(newAssessment);
+			//// Filter out empty objects
+			//formData = formData.Where(asset => asset != null && asset.AssetName != "").ToList();
+
+			//if(formData.Any())
+			//{
+			//	var newAssessment = new Assessment
+			//	{
+			//		// Generate a readable name using the current date and time
+			//		Name = "Assessment_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"),
+			//		UserId = user.Id,
+			//	};
+
+			//	_context.Assessments.Add(newAssessment);
 
 
 
-				foreach(var asset in formData)
-				{
-					var newAsset = new Asset();
-					newAsset.Name = asset.AssetName;
-					newAsset.Type = asset.AssetType;
-					newAsset.Reference = asset.Reference;
-					newAsset.Location = asset.Location;
-					newAsset.Owner = asset.Owner;
-					newAsset.AssessmentId = newAssessment.Id;
+			//	foreach(var asset in formData)
+			//	{
+			//		var newAsset = new Asset();
+			//		newAsset.Name = asset.AssetName;
+			//		newAsset.Type = asset.AssetType;
+			//		newAsset.Reference = asset.Reference;
+			//		newAsset.Location = asset.Location;
+			//		newAsset.Owner = asset.Owner;
+			//		newAsset.AssessmentId = newAssessment.Id;
 
-					foreach(var threat in asset.Threats)
-					{
-						var newThreat = new Threat();
-						newThreat.Name = threat.Threat;
-						newThreat.AssetId = newAsset.Id;
-						newThreat.Vulnerabilities = threat.Vulnerabilities;
+			//		foreach(var threat in asset.Threats)
+			//		{
+			//			var newThreat = new Threat();
+			//			newThreat.Name = threat.Threat;
+			//			newThreat.AssetId = newAsset.Id;
+			//			newThreat.Vulnerabilities = threat.Vulnerabilities;
 
-						newAsset.Threats.Add(newThreat);
-					}
+			//			newAsset.Threats.Add(newThreat);
+			//		}
 
-					_context.Assets.Add(newAsset);
-				}
+			//		_context.Assets.Add(newAsset);
+			//	}
 
-				await _context.SaveChangesAsync();
-			}
-			return Json(new { success = true, message = "Assessment created successfully." });
+			//	await _context.SaveChangesAsync();
+			//}
+			//return Json(new { success = true, message = "Assessment created successfully." });
 		}
 
 		[HttpGet]

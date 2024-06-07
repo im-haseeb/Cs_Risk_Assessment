@@ -1,0 +1,567 @@
+﻿@using Cs_Risk_Assessment.Statics;
+@model IEnumerable<Cs_Risk_Assessment.ViewModels.AssetsViewModelWithThreatsAndVulnerabilities>
+@{
+	ViewData["Title"] = "Step3";
+	Layout = "~/Views/Shared/_templateLayout.cshtml";
+}
+
+@section OtherHeadContent {
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+	<style>
+
+		.card {
+			min-height: 100vh;
+		}
+
+		.table-container {
+			overflow-x: auto; /* Enable horizontal scrolling if table overflows */
+			max-width: 100%; /* Ensure table does not overflow its container */
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			border: 1px solid #000;
+		}
+
+		th, td {
+			padding: 8px;
+			text-align: left;
+			border: 1px solid #000;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		td input {
+			width: 100%; /* Make input fields adjust automatically with table size */
+			box-sizing: border-box; /* Ensure input width includes padding and border */
+		}
+
+		.bootstrap-select .dropdown-menu {
+			position: relative !important;
+			z-index: 9999 !important; /* Set a high z-index value */
+		}
+
+		
+
+/* #form-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
+
+/* form {
+  width: 90%;
+  max-width: 500px;
+} */
+.title #form-title {
+  margin-top: 0;
+  font-weight: 400;
+  text-align: center;
+}
+#debt-amount-slider {
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+  position: relative;
+  width: 100%;
+  height: 50px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+#debt-amount-slider::before {
+  content: " ";
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  width: calc(100% * (4 / 5));
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+}
+#debt-amount-slider input,
+#debt-amount-slider label {
+  box-sizing: border-box;
+  flex: 1;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+}
+#debt-amount-slider label {
+  display: inline-block;
+  position: relative;
+  width: 20%;
+  height: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+#debt-amount-slider label::before {
+  content: attr(data-debt-amount);
+  position: absolute;
+  left: 50%;
+  padding-top: 10px;
+  transform: translate(-50%, 45px);
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0.85;
+  transition: all 0.15s ease-in-out;
+}
+ #debt-amount-slider label::after {
+  content: " ";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border: 2px solid #000;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+ #debt-amount-slider label:hover::after {
+  transform: translate(-50%, -50%) scale(1.25);
+}
+#debt-amount-slider input {
+  display: none;
+}
+#debt-amount-slider input:checked + label::before {
+  font-weight: 800;
+  opacity: 1;
+}
+#debt-amount-slider input:checked + label::after {
+  border-width: 4px;
+  transform: translate(-50%, -50%) scale(0.75);
+}
+#debt-amount-slider input:checked ~ #debt-amount-pos {
+  opacity: 1;
+}
+#debt-amount-slider input:checked:nth-child(1) ~ #debt-amount-pos {
+  left: 10%;
+}
+#debt-amount-slider input:checked:nth-child(3) ~ #debt-amount-pos {
+  left: 30%;
+}
+#debt-amount-slider input:checked:nth-child(5) ~ #debt-amount-pos {
+  left: 50%;
+}
+#debt-amount-slider input:checked:nth-child(7) ~ #debt-amount-pos {
+  left: 70%;
+}
+#debt-amount-slider input:checked:nth-child(9) ~ #debt-amount-pos {
+  left: 90%;
+}
+#debt-amount-slider #debt-amount-pos {
+  display: block;
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: #000;
+  border-radius: 50%;
+  transition: all 0.15s ease-in-out;
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  opacity: 0;
+  z-index: 2;
+}
+/* form:valid #debt-amount-slider input + label::before {
+  transform: translate(-50%, 45px) scale(0.9);
+  transition: all 0.15s linear;
+}
+form:valid #debt-amount-slider input:checked + label::before {
+  transform: translate(-50%, 45px) scale(1.1);
+  transition: all 0.15s linear;
+} */
+/* form + button {
+  display: block;
+  position: relative;
+  margin: 56px auto 0;
+  padding: 10px 20px;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  transition: all 0.15s ease-in-out;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 600;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 8px;
+  outline: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: pointer;
+} */
+/* form + button:hover {
+  background: #000;
+  color: #fff;
+}
+form + button:hover:active {
+  transform: scale(0.9);
+}
+form + button:focus {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: #fff;
+  pointer-events: none;
+}
+form + button:focus::before {
+  -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+} */
+/* form + button::before {
+  display: inline-block;
+  width: 0;
+  opacity: 0;
+  content: "";
+  font-family: "Font Awesome 5 Pro";
+  font-weight: 900;
+  margin-right: 0;
+  transform: rotate(0deg);
+} */
+/* form:invalid + button {
+  pointer-events: none;
+  opacity: 0.25;
+}
+ */
+/* @@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+    width: 24px;
+    opacity: 1;
+    margin-right: 12px;
+  }
+  to {
+    transform: rotate(360deg);
+    width: 24px;
+    opacity: 1;
+    margin-right: 12px;
+  }
+} *//* @@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+    width: 24px;
+    opacity: 1;
+    margin-right: 12px;
+  }
+  to {
+    transform: rotate(360deg);
+    width: 24px;
+    opacity: 1;
+    margin-right: 12px;
+  }
+} */
+
+/* @@keyframes spin {
+  from {
+    transform: rotate(0deg);
+    width: 24px;
+    opacity: 1;
+    margin-right: 12px;
+  }
+  to {
+    transform: rotate(360deg);
+    width: 24px;
+    opacity: 1;
+    margin-right: 12px;
+  }
+} */
+
+
+	</style>
+}
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+	<li class="nav-item" role="presentation">
+		<button class="nav-link disabled  " id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">List Of Assets</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link disabled" id="step2-tab" data-bs-toggle="pill" data-bs-target="#step2" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Threats</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link active" id="step3" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Vulnerabilities</button>
+	</li>
+</ul>
+
+
+<div class="tab-content" id="pills-tabContent">
+	@* <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">...</div> *@
+	<div class="tab-pane fade show active" id="step2" role="tabpanel" aria-labelledby="step2-tab">
+		<div class="card">
+			<div class="card-body">
+				<div class="table-container">
+					<table class="mt-2 assetTable">
+						<thead>
+							<tr>
+								<th>Asset name</th>
+								@* <th>Asset type</th>
+								<th>Reference</th>
+								<th>Location of Asset</th>
+								<th>Asset owner</th> *@
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@Model.ToList().Count()
+							@foreach (var item in Model.ToList())
+							{
+								@item.AssetName
+								<form>
+
+								<tr>
+									<td class="w-25" name="AssetName">@item.AssetName</td>
+									@* <td name="AssetType">@item.AssetType</td>
+									<td name="Reference">@item.Reference</td>
+									<td name="Location">@item.Location</td>
+									<td name="Owner">@item.Owner</td> *@
+										<td>
+										<table class="mt-2 vulnerabilityTable">
+												<thead>
+													<tr>
+														<th>Vulnerabilities</th>
+														<th>Likeyhood & Imapct</th>
+													</tr>
+												</thead>
+												@foreach(var threat in item.Threats)
+												{
+													foreach(var vul in threat.Vulnerabilities)
+													{
+														<tr>
+
+														<td name="vulnerability">@vul</td>
+															<td class="w-100">
+																<div class="mb-5" id="form-wrapper">
+																<form class="likehood" method="GET">
+																	<h4 class="text-primary text-center">LikelyHood</h4>
+																		<div id="debt-amount-slider">
+																		<input type="radio" name="@vul" id="@vul-lh-1" value="1" required>
+																		<label class="text-primary" for="@vul-lh-1" data-debt-amount="Highly Unlikely"></label>
+																		<input type="radio" name="@vul" id="@vul-lh-2" value="2" required>
+																		<label class="text-primary" for="@vul-lh-2" data-debt-amount="Unlikely"></label>
+																		<input type="radio" name="@vul" id="@vul-lh-3" value="3" required>
+																		<label class="text-primary" for="@vul-lh-3" data-debt-amount="Likely"></label>
+																		<input type="radio" name="@vul" id="@vul-lh-4" value="4" required>
+																		<label class="text-primary" for="@vul-lh-4" data-debt-amount="Somewhat Likely"></label>
+																		<input type="radio" name="@vul" id="@vul-lh-5" value="5" required>
+																		<label class="text-primary" for="@vul-lh-5" data-debt-amount="Highly Likely"></label>
+																		<div class="bg-primary" id="debt-amount-pos"></div>
+																		</div>
+																	</form>
+																</div>
+															<div class="mb-5" id="form-wrapper">
+																<form class="Impact" method="GET">
+																	<h4 class="text-info text-center">Impact</h4>
+																	<div id="debt-amount-slider">
+																		<input type="radio" name="@vul" id="@vul-i-1" value="1" required>
+																		<label class="text-info" for="@vul-i-1" data-debt-amount="Very Low"></label>
+																		<input type="radio" name="@vul" id="@vul-i-2" value="2" required>
+																		<label class="text-info" for="@vul-i-2" data-debt-amount="Low"></label>
+																		<input type="radio" name="@vul" id="@vul-i-3" value="3" required>
+																		<label class="text-info" for="@vul-i-3" data-debt-amount="Medium"></label>
+																		<input type="radio" name="@vul" id="@vul-i-4" value="4" required>
+																		<label class="text-info" for="@vul-i-4" data-debt-amount="High"></label>
+																		<input type="radio" name="@vul" id="@vul-i-5" value="5" required>
+																		<label class="text-info" for="@vul-i-5" data-debt-amount="Very High"></label>
+																		<div class="bg-info" id="debt-amount-pos"></div>
+																	</div>
+																</form>
+															</div>
+															</td>
+														</tr>
+													}
+														
+												}
+											</table>
+										</td>
+								</tr>
+								</form>
+							}
+						</tbody>
+					</table>
+				</div>
+				<div class="mt-4">
+					<button class="btn btn-info" id="submitData">Next</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	@*@<div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div> *@
+</div>
+
+
+
+@section OtherPageScripts
+	{
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('.selectpicker').selectpicker();
+		});
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById('submitData').addEventListener('click', function () {
+				// Create an object to store all data
+				let data = [];
+
+				debugger;
+
+				// Loop through each vulnerability and collect the selected values
+				document.querySelectorAll('tr').forEach(function (row) {
+					let vulnerability = row.querySelector('td[name="vulnerability"]');
+
+					let likelihood = row.querySelector('input[name*="-lh"]:checked');
+					let impact = row.querySelector('input[name*="-i"]:checked');
+
+					// Collect data if both likelihood and impact are selected
+					if (likelihood && impact) {
+						data.push({
+							vulnerability: vulnerability,
+							likelihood: likelihood.value,
+							impact: impact.value
+						});
+					}
+				});
+
+				// Log the collected data as JSON
+				console.log(JSON.stringify(data, null, 2));
+			});
+		});
+	</script>
+
+
+	@* <script>
+		$(document).ready(function () {
+			$('#submitData').click(function (event) {
+				event.preventDefault(); // Prevent default button click behavior
+				var assetsData = [];
+				var isValid = true; // Flag to track form validation
+
+				// Iterate over each table
+				$('.assetTable tbody tr').each(function () {
+					//var $inputs = $(this).find('input[name="AssetName"], input[name="AssetType"], input[name="Reference"], input[name="Location"], input[name="Owner"]');
+					var isTableValid = true; // Flag to track table validation
+
+					// // Check each input field in the table
+					// $inputs.each(function () {
+					// 	var $input = $(this);
+					// 	var inputValue = $input.val();
+
+					// 	if (!inputValue) {
+					// 		// If input field is empty, mark table as invalid
+					// 		isTableValid = false;
+					// 		// Highlight the empty input field
+					// 		$input.addClass('invalid-input');
+					// 	} else {
+					// 		// If input field is not empty, remove invalid class
+					// 		$input.removeClass('invalid-input');
+					// 	}
+					// });
+
+					if (isTableValid) {
+						// If all input fields in the table are valid, construct assetData object
+						var assetData = {
+							AssetName: $(this).find('td[name="AssetName"]').text(), // Use text() instead of val() for td elements
+							AssetType: $(this).find('td[name="AssetType"]').text(), // Use text() instead of val() for td elements
+							Reference: $(this).find('td[name="Reference"]').text(), // Use text() instead of val() for td elements
+							Location: $(this).find('td[name="Location"]').text(), // Use text() instead of val() for td elements
+							Owner: $(this).find('td[name="Owner"]').text(), // Use text() instead of val() for td elements
+							Threats: [],
+							// Add other properties as needed
+						};
+
+						$(this).find('.threatTable tbody tr').each(function () {
+							var threatObject = {};
+							threatObject.threat = $(this).find('td[name="Threat"]').text();
+							threatObject.Vulnerabilities = [];
+							
+							$(this).find('select[name="Vulnerabilities"] option:selected').each(function () {
+								threatObject.Vulnerabilities.push($(this).val()); // Add the value of each selected option to the Threats array
+							});
+
+							assetData.Threats.push(threatObject);
+							console.log(threatObject)
+						})
+
+						// // Retrieve selected threats from the multi-select dropdown
+						// $(this).find('select[name="Threats"] option:selected').each(function () {
+						// 	assetData.Threats.push($(this).val()); // Add the value of each selected option to the Threats array
+						// });
+						// assetsData.push(assetData);
+
+						// $(this).find('select[name="Vulnerabilities"] option:selected').each(function () {
+						// 	assetData.Vulnerabilities.push($(this).val()); // Add the value of each selected option to the Threats array
+						// });
+						assetsData.push(assetData);
+					} else {
+						// If any input field in the table is empty, mark form as invalid
+						isValid = false;
+					}
+
+				});
+
+				// If form is valid, submit data to controller using AJAX
+				if (isValid) {
+					console.log(assetsData);
+					$.ajax({
+						url: '/Assessment/ProcessStep3',
+						type: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify(assetsData),
+						success: function (response) {
+							if (response.success) {
+								SuccessToast(response.message);
+								setTimeout(function () {
+									window.location.href = '/Assessment/ViewAllAssessments';
+								}, 2000);
+							} else {
+								console.log("Fail");
+								ErrorToast(response.message);
+							}
+							
+						},
+						error: function (xhr, status, error) {
+							console.log(status);
+							console.log(error);
+						}
+					});
+				}
+			});
+
+			// Remove 'invalid-input' class when user types in input field
+			$('.assetTable input').on('input', function () {
+				$(this).removeClass('invalid-input');
+			});
+		});
+
+	</script> *@
+
+}
+

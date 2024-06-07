@@ -218,15 +218,19 @@
 						contentType: 'application/json',
 						data: JSON.stringify(assetsData),
 						success: function (response) {
-							if (response.success) {
-								SuccessToast(response.message);
-								setTimeout(function () {
-									window.location.href = '/Assessment/ViewAllAssessments';
-								}, 2000);
-							} else {
-								console.log("Fail");
-								ErrorToast(response.message);
-							}
+							console.log(response.data);
+							window.location.href = '/Assessment/step4';
+							// if (response.success) {
+								
+							// 	// SuccessToast(response.message);
+							// 	// setTimeout(function () {
+							// 	// 	window.location.href = '/Assessment/ViewAllAssessments';
+							// 	// }, 2000);
+							// } else {
+							// 	console.log(response.data);
+							// 	console.log("Fail");
+							// 	ErrorToast(response.message);
+							// }
 							
 						},
 						error: function (xhr, status, error) {
