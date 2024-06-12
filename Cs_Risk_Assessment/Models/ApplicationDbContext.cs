@@ -12,6 +12,7 @@ namespace Cs_Risk_Assessment.Models
 		public DbSet<Assessment> Assessments { get; set; }
 		public DbSet<Threat> Threats { get; set; }
 		public DbSet<Asset> Assets { get; set; }
+		public DbSet<Vulnerability> Vulnerabilities { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -345,50 +345,54 @@ form + button:focus::before {
 														<th>Likeyhood & Imapct</th>
 													</tr>
 												</thead>
+												@{
+													int index = 0;
+												}
 												@foreach(var threat in item.Threats)
 												{
+													index++;
 													foreach(var vul in threat.Vulnerabilities)
 													{
 														<tr>
 
 														<td name="vulnerability">@vul</td>
 															<td class="w-100">
-																<div class="mb-5" id="form-wrapper">
-																<form class="likehood" method="GET">
+															<div class="mb-5 LikeHoodForm" id="form-wrapper1">
+																<form class="LikeHoodForm-ss" method="GET">
 																	<h4 class="text-primary text-center">LikelyHood</h4>
 																		<div id="debt-amount-slider">
-																		<input type="radio" name="@vul" id="@vul-lh-1" value="1" required>
-																		<label class="text-primary" for="@vul-lh-1" data-debt-amount="Highly Unlikely"></label>
-																		<input type="radio" name="@vul" id="@vul-lh-2" value="2" required>
-																		<label class="text-primary" for="@vul-lh-2" data-debt-amount="Unlikely"></label>
-																		<input type="radio" name="@vul" id="@vul-lh-3" value="3" required>
-																		<label class="text-primary" for="@vul-lh-3" data-debt-amount="Likely"></label>
-																		<input type="radio" name="@vul" id="@vul-lh-4" value="4" required>
-																		<label class="text-primary" for="@vul-lh-4" data-debt-amount="Somewhat Likely"></label>
-																		<input type="radio" name="@vul" id="@vul-lh-5" value="5" required>
-																		<label class="text-primary" for="@vul-lh-5" data-debt-amount="Highly Likely"></label>
-																		<div class="bg-primary" id="debt-amount-pos"></div>
+																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-1" value="1" required>
+																			<label class="text-primary" for="@vul-lh-1" data-debt-amount="Highly Unlikely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-2" value="2" required>
+																			<label class="text-primary" for="@vul-lh-2" data-debt-amount="Unlikely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-3" value="3" required>
+																			<label class="text-primary" for="@vul-lh-3" data-debt-amount="Likely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-4" value="4" required>
+																			<label class="text-primary" for="@vul-lh-4" data-debt-amount="Somewhat Likely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-5" value="5" required>
+																			<label class="text-primary" for="@vul-lh-5" data-debt-amount="Highly Likely"></label>
+																			<div class="bg-primary" id="debt-amount-pos"></div>
 																		</div>
 																	</form>
 																</div>
-															<div class="mb-5" id="form-wrapper">
-																<form class="Impact" method="GET">
-																	<h4 class="text-info text-center">Impact</h4>
-																	<div id="debt-amount-slider">
-																		<input type="radio" name="@vul" id="@vul-i-1" value="1" required>
-																		<label class="text-info" for="@vul-i-1" data-debt-amount="Very Low"></label>
-																		<input type="radio" name="@vul" id="@vul-i-2" value="2" required>
-																		<label class="text-info" for="@vul-i-2" data-debt-amount="Low"></label>
-																		<input type="radio" name="@vul" id="@vul-i-3" value="3" required>
-																		<label class="text-info" for="@vul-i-3" data-debt-amount="Medium"></label>
-																		<input type="radio" name="@vul" id="@vul-i-4" value="4" required>
-																		<label class="text-info" for="@vul-i-4" data-debt-amount="High"></label>
-																		<input type="radio" name="@vul" id="@vul-i-5" value="5" required>
-																		<label class="text-info" for="@vul-i-5" data-debt-amount="Very High"></label>
-																		<div class="bg-info" id="debt-amount-pos"></div>
-																	</div>
-																</form>
-															</div>
+															<div class="mb-5 ImpactForm" id="form-wrapper">
+																	<form class="ImpactForm-ss" method="GET">
+																		<h4 class="text-info text-center">Impact</h4>
+																		<div id="debt-amount-slider">
+																			<input type="radio" name="@index-impact-@vul" id="@vul-i-1" value="1" required>
+																			<label class="text-info" for="@vul-i-1" data-debt-amount="Very Low"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@vul-i-2" value="2" required>
+																			<label class="text-info" for="@vul-i-2" data-debt-amount="Low"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@vul-i-3" value="3" required>
+																			<label class="text-info" for="@vul-i-3" data-debt-amount="Medium"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@vul-i-4" value="4" required>
+																			<label class="text-info" for="@vul-i-4" data-debt-amount="High"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@vul-i-5" value="5" required>
+																			<label class="text-info" for="@vul-i-5" data-debt-amount="Very High"></label>
+																			<div class="bg-info" id="debt-amount-pos"></div>
+																		</div>
+																	</form>
+																</div>
 															</td>
 														</tr>
 													}
@@ -425,143 +429,101 @@ form + button:focus::before {
 		});
 	</script>
 
+@* 	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById('submitData').addEventListener('click', function () {
+				
+			});
+		});
+	</script> *@
+
+	@* <script>
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById('submitData').addEventListener('click', function () {
+				const vulnerabilities = document.querySelectorAll('.vulnerabilityTable tbody tr');
+				const data = [];
+
+				vulnerabilities.forEach((vulnerability) => {
+					const vulnName = vulnerability.querySelector('td[name="vulnerability"]').innerText;
+
+					const likelihoodInputs = vulnerability.querySelectorAll('form.likehood input[type="radio"]');
+					let likelihood = null;
+					likelihoodInputs.forEach((input) => {
+						if (input.checked) {
+							likelihood = input.value;
+						}
+					});
+
+					const impactInputs = vulnerability.querySelectorAll('form.Impact input[type="radio"]');
+					let impact = null;
+					impactInputs.forEach((input) => {
+						if (input.checked) {
+							impact = input.value;
+						}
+					});
+
+					data.push({
+						vulnerability: vulnName,
+						likelihood: likelihood,
+						impact: impact,
+					});
+				});
+
+				console.log(JSON.stringify(data));
+				console.log(data);
+			});
+		});
+	</script> *@
+
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			document.getElementById('submitData').addEventListener('click', function () {
-				// Create an object to store all data
-				let data = [];
+				const vulnerabilities = document.querySelectorAll('.vulnerabilityTable tbody tr');
 
-				debugger;
+				//console.log(vulnerabilities)
+				const data = [];
 
-				// Loop through each vulnerability and collect the selected values
-				document.querySelectorAll('tr').forEach(function (row) {
-					let vulnerability = row.querySelector('td[name="vulnerability"]');
+				vulnerabilities.forEach((vulnerability) => {
+					const vulnName = vulnerability.querySelector('td[name="vulnerability"]').innerText;
+					console.log(vulnerability)
+					const likelihoodInputs = vulnerability.querySelectorAll('.LikeHoodForm input[type="radio"]');
+					
+					// console.log(likelihoodInputs)
+					
+					let likelihood = null;
+					likelihoodInputs.forEach((input) => {
+						//console.log(input)
+						if (input.checked) {
+							likelihood = input.value;
+						}
+					});
 
-					let likelihood = row.querySelector('input[name*="-lh"]:checked');
-					let impact = row.querySelector('input[name*="-i"]:checked');
+					const impactInputs = vulnerability.querySelectorAll('.ImpactForm input[type="radio"]');
 
-					// Collect data if both likelihood and impact are selected
-					if (likelihood && impact) {
-						data.push({
-							vulnerability: vulnerability,
-							likelihood: likelihood.value,
-							impact: impact.value
-						});
-					}
+					// console.log(impactInputs)
+					let impact = null;
+					impactInputs.forEach((input) => {
+						
+						if (input.checked) {
+							impact = input.value;
+						}
+					});
+
+					data.push({
+						vulnerability: vulnName,
+						likelihood: likelihood,
+						impact: impact,
+					});
 				});
 
-				// Log the collected data as JSON
-				console.log(JSON.stringify(data, null, 2));
+				console.log(JSON.stringify(data));
+				console.log(data);
 			});
 		});
 	</script>
 
 
-	@* <script>
-		$(document).ready(function () {
-			$('#submitData').click(function (event) {
-				event.preventDefault(); // Prevent default button click behavior
-				var assetsData = [];
-				var isValid = true; // Flag to track form validation
-
-				// Iterate over each table
-				$('.assetTable tbody tr').each(function () {
-					//var $inputs = $(this).find('input[name="AssetName"], input[name="AssetType"], input[name="Reference"], input[name="Location"], input[name="Owner"]');
-					var isTableValid = true; // Flag to track table validation
-
-					// // Check each input field in the table
-					// $inputs.each(function () {
-					// 	var $input = $(this);
-					// 	var inputValue = $input.val();
-
-					// 	if (!inputValue) {
-					// 		// If input field is empty, mark table as invalid
-					// 		isTableValid = false;
-					// 		// Highlight the empty input field
-					// 		$input.addClass('invalid-input');
-					// 	} else {
-					// 		// If input field is not empty, remove invalid class
-					// 		$input.removeClass('invalid-input');
-					// 	}
-					// });
-
-					if (isTableValid) {
-						// If all input fields in the table are valid, construct assetData object
-						var assetData = {
-							AssetName: $(this).find('td[name="AssetName"]').text(), // Use text() instead of val() for td elements
-							AssetType: $(this).find('td[name="AssetType"]').text(), // Use text() instead of val() for td elements
-							Reference: $(this).find('td[name="Reference"]').text(), // Use text() instead of val() for td elements
-							Location: $(this).find('td[name="Location"]').text(), // Use text() instead of val() for td elements
-							Owner: $(this).find('td[name="Owner"]').text(), // Use text() instead of val() for td elements
-							Threats: [],
-							// Add other properties as needed
-						};
-
-						$(this).find('.threatTable tbody tr').each(function () {
-							var threatObject = {};
-							threatObject.threat = $(this).find('td[name="Threat"]').text();
-							threatObject.Vulnerabilities = [];
-							
-							$(this).find('select[name="Vulnerabilities"] option:selected').each(function () {
-								threatObject.Vulnerabilities.push($(this).val()); // Add the value of each selected option to the Threats array
-							});
-
-							assetData.Threats.push(threatObject);
-							console.log(threatObject)
-						})
-
-						// // Retrieve selected threats from the multi-select dropdown
-						// $(this).find('select[name="Threats"] option:selected').each(function () {
-						// 	assetData.Threats.push($(this).val()); // Add the value of each selected option to the Threats array
-						// });
-						// assetsData.push(assetData);
-
-						// $(this).find('select[name="Vulnerabilities"] option:selected').each(function () {
-						// 	assetData.Vulnerabilities.push($(this).val()); // Add the value of each selected option to the Threats array
-						// });
-						assetsData.push(assetData);
-					} else {
-						// If any input field in the table is empty, mark form as invalid
-						isValid = false;
-					}
-
-				});
-
-				// If form is valid, submit data to controller using AJAX
-				if (isValid) {
-					console.log(assetsData);
-					$.ajax({
-						url: '/Assessment/ProcessStep3',
-						type: 'POST',
-						contentType: 'application/json',
-						data: JSON.stringify(assetsData),
-						success: function (response) {
-							if (response.success) {
-								SuccessToast(response.message);
-								setTimeout(function () {
-									window.location.href = '/Assessment/ViewAllAssessments';
-								}, 2000);
-							} else {
-								console.log("Fail");
-								ErrorToast(response.message);
-							}
-							
-						},
-						error: function (xhr, status, error) {
-							console.log(status);
-							console.log(error);
-						}
-					});
-				}
-			});
-
-			// Remove 'invalid-input' class when user types in input field
-			$('.assetTable input').on('input', function () {
-				$(this).removeClass('invalid-input');
-			});
-		});
-
-	</script> *@
+	
 
 }
 

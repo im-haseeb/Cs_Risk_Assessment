@@ -116,55 +116,96 @@ namespace Cs_Risk_Assessment.Controllers
 			formData = formData.Where(asset => asset != null && asset.AssetName != "").ToList();
 			HttpContext.Session.SetString("Step4Data", JsonConvert.SerializeObject(formData));
 			return Ok(); // 200 OK
+		}
 
-			//var user = await _userManager.GetUserAsync(User);
-			//if (user == null)
-			//{
-			//	return NotFound();
-			//}
-
-			//// Filter out empty objects
+		[HttpPost]
+		public async Task<IActionResult> ProcessStep4([FromBody] List<LikehoodAndImpactDto> formData)
+		{
+			if (!formData.Any())
+			{
+				return BadRequest("No form data provided."); // 400 Bad Request
+			}
 			//formData = formData.Where(asset => asset != null && asset.AssetName != "").ToList();
+			//HttpContext.Session.SetString("Step4Data", JsonConvert.SerializeObject(formData));
+			//return Ok(); // 200 OK
 
-			//if(formData.Any())
-			//{
-			//	var newAssessment = new Assessment
-			//	{
-			//		// Generate a readable name using the current date and time
-			//		Name = "Assessment_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"),
-			//		UserId = user.Id,
-			//	};
+			string sessionDataJson = HttpContext.Session.GetString("Step4Data");
 
-			//	_context.Assessments.Add(newAssessment);
+			if (!string.IsNullOrEmpty(sessionDataJson))
+			{
+				List<AssetsViewModelWithThreatsAndVulnerabilities> sessionData = JsonConvert.DeserializeObject<List<AssetsViewModelWithThreatsAndVulnerabilities>>(sessionDataJson);
+
+				var user = await _userManager.GetUserAsync(User);
+				if (user == null)
+				{
+					return NotFound();
+				}
+
+				// Filter out empty objects
+				sessionData = sessionData.Where(asset => asset != null && asset.AssetName != "").ToList();
+
+				if (sessionData.Any())
+				{
+					var newAssessment = new Assessment
+					{
+						// Generate a readable name using the current date and time
+						Name = "Assessment_" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"),
+						UserId = user.Id,
+					};
+
+					_context.Assessments.Add(newAssessment);
 
 
+					int index = 0;
+					foreach (var asset in sessionData)
+					{
+						var newAsset = new Asset();
+						newAsset.Name = asset.AssetName;
+						newAsset.Type = asset.AssetType;
+						newAsset.Reference = asset.Reference;
+						newAsset.Location = asset.Location;
+						newAsset.Owner = asset.Owner;
+						newAsset.AssessmentId = newAssessment.Id;
 
-			//	foreach(var asset in formData)
-			//	{
-			//		var newAsset = new Asset();
-			//		newAsset.Name = asset.AssetName;
-			//		newAsset.Type = asset.AssetType;
-			//		newAsset.Reference = asset.Reference;
-			//		newAsset.Location = asset.Location;
-			//		newAsset.Owner = asset.Owner;
-			//		newAsset.AssessmentId = newAssessment.Id;
+						
+						foreach (var threat in asset.Threats)
+						{
+							var newThreat = new Threat();
+							newThreat.Name = threat.Threat;
+							newThreat.AssetId = newAsset.Id;
 
-			//		foreach(var threat in asset.Threats)
-			//		{
-			//			var newThreat = new Threat();
-			//			newThreat.Name = threat.Threat;
-			//			newThreat.AssetId = newAsset.Id;
-			//			newThreat.Vulnerabilities = threat.Vulnerabilities;
+							foreach(var vul in threat.Vulnerabilities)
+							{
+								index++;
+								var vulObj = formData[index];
 
-			//			newAsset.Threats.Add(newThreat);
-			//		}
+								var newVul = new Vulnerability();
+								newVul.vul = vulObj.Vulnerability;
+								newVul.LikeliHood = vulObj.Likelihood;
+								newVul.Impact = vulObj.Impact;
+								newVul.ThreatId = newThreat.Id;
 
-			//		_context.Assets.Add(newAsset);
-			//	}
+								_context.Vulnerabilities.Add(newVul);
 
-			//	await _context.SaveChangesAsync();
-			//}
-			//return Json(new { success = true, message = "Assessment created successfully." });
+							}
+
+							newAsset.Threats.Add(newThreat);
+						}
+
+						_context.Assets.Add(newAsset);
+					}
+
+					await _context.SaveChangesAsync();
+				}
+				return Json(new { success = true, message = "Assessment created successfully." });
+			}
+			else
+			{
+				// If session data is empty or data is not present, handle accordingly
+				// For example, redirect to an error view
+				return RedirectToAction("Error");
+			}
+
 		}
 
 		[HttpGet]
