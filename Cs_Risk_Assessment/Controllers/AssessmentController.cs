@@ -176,7 +176,7 @@ namespace Cs_Risk_Assessment.Controllers
 
 							foreach(var vul in threat.Vulnerabilities)
 							{
-								index++;
+								
 								var vulObj = formData[index];
 
 								var newVul = new Vulnerability();
@@ -185,7 +185,9 @@ namespace Cs_Risk_Assessment.Controllers
 								newVul.Impact = vulObj.Impact;
 								newVul.ThreatId = newThreat.Id;
 
-								_context.Vulnerabilities.Add(newVul);
+								newThreat.Vulnerabilities.Add(newVul);
+
+								index++;
 
 							}
 
@@ -193,9 +195,19 @@ namespace Cs_Risk_Assessment.Controllers
 						}
 
 						_context.Assets.Add(newAsset);
-					}
 
-					await _context.SaveChangesAsync();
+						try
+						{
+							await _context.SaveChangesAsync();
+						}
+						catch (Exception ex)
+						{
+
+							throw;
+						}
+					}
+					
+					
 				}
 				return Json(new { success = true, message = "Assessment created successfully." });
 			}

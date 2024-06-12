@@ -518,6 +518,33 @@ form + button:focus::before {
 
 				console.log(JSON.stringify(data));
 				console.log(data);
+
+				$.ajax({
+					url: '/Assessment/ProcessStep4',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify(data),
+					success: function (response) {
+						console.log(response.data);
+						// window.location.href = '/Assessment/step4';
+						if (response.success) {
+
+							SuccessToast(response.message);
+							setTimeout(function () {
+								window.location.href = '/Assessment/ViewAllAssessments';
+							}, 2000);
+						} else {
+							console.log(response.data);
+							console.log("Fail");
+							ErrorToast(response.message);
+						}
+
+					},
+					error: function (xhr, status, error) {
+						console.log(status);
+						console.log(error);
+					}
+				});
 			});
 		});
 	</script>
