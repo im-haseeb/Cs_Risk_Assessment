@@ -302,7 +302,10 @@ form + button:focus::before {
 		<button class="nav-link disabled" id="step2-tab" data-bs-toggle="pill" data-bs-target="#step2" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Threats</button>
 	</li>
 	<li class="nav-item" role="presentation">
-		<button class="nav-link active" id="step3" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Vulnerabilities</button>
+		<button class="nav-link disabled" id="step3" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Vulnerabilities</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link active" id="step3" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Likelihood and Impact</button>
 	</li>
 </ul>
 
@@ -325,10 +328,12 @@ form + button:focus::before {
 							</tr>
 						</thead>
 						<tbody>
-							@Model.ToList().Count()
+							@* @Model.ToList().Count() *@
+							@{
+								int index = 0;
+							}
 							@foreach (var item in Model.ToList())
 							{
-								@item.AssetName
 								<form>
 
 								<tr>
@@ -345,14 +350,14 @@ form + button:focus::before {
 														<th>Likeyhood & Imapct</th>
 													</tr>
 												</thead>
-												@{
-													int index = 0;
-												}
+												
 												@foreach(var threat in item.Threats)
 												{
-													index++;
+													
 													foreach(var vul in threat.Vulnerabilities)
 													{
+														@* @threat.Vulnerabilities.Count(); *@
+														index += 1;
 														<tr>
 
 														<td name="vulnerability">@vul</td>
@@ -361,16 +366,16 @@ form + button:focus::before {
 																<form class="LikeHoodForm-ss" method="GET">
 																	<h4 class="text-primary text-center">LikelyHood</h4>
 																		<div id="debt-amount-slider">
-																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-1" value="1" required>
-																			<label class="text-primary" for="@vul-lh-1" data-debt-amount="Highly Unlikely"></label>
-																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-2" value="2" required>
-																			<label class="text-primary" for="@vul-lh-2" data-debt-amount="Unlikely"></label>
-																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-3" value="3" required>
-																			<label class="text-primary" for="@vul-lh-3" data-debt-amount="Likely"></label>
-																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-4" value="4" required>
-																			<label class="text-primary" for="@vul-lh-4" data-debt-amount="Somewhat Likely"></label>
-																			<input type="radio" name="@index-likelihood-@vul" id="@vul-lh-5" value="5" required>
-																			<label class="text-primary" for="@vul-lh-5" data-debt-amount="Highly Likely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-1" value="1" required>
+																			<label class="text-primary" for="@index-@vul-lh-1" data-debt-amount="Highly Unlikely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-2" value="2" required>
+																			<label class="text-primary" for="@index-@vul-lh-2" data-debt-amount="Unlikely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-3" value="3" required>
+																			<label class="text-primary" for="@index-@vul-lh-3" data-debt-amount="Likely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-4" value="4" required>
+																			<label class="text-primary" for="@index-@vul-lh-4" data-debt-amount="Somewhat Likely"></label>
+																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-5" value="5" required>
+																			<label class="text-primary" for="@index-@vul-lh-5" data-debt-amount="Highly Likely"></label>
 																			<div class="bg-primary" id="debt-amount-pos"></div>
 																		</div>
 																	</form>
@@ -379,16 +384,16 @@ form + button:focus::before {
 																	<form class="ImpactForm-ss" method="GET">
 																		<h4 class="text-info text-center">Impact</h4>
 																		<div id="debt-amount-slider">
-																			<input type="radio" name="@index-impact-@vul" id="@vul-i-1" value="1" required>
-																			<label class="text-info" for="@vul-i-1" data-debt-amount="Very Low"></label>
-																			<input type="radio" name="@index-impact-@vul" id="@vul-i-2" value="2" required>
-																			<label class="text-info" for="@vul-i-2" data-debt-amount="Low"></label>
-																			<input type="radio" name="@index-impact-@vul" id="@vul-i-3" value="3" required>
-																			<label class="text-info" for="@vul-i-3" data-debt-amount="Medium"></label>
-																			<input type="radio" name="@index-impact-@vul" id="@vul-i-4" value="4" required>
-																			<label class="text-info" for="@vul-i-4" data-debt-amount="High"></label>
-																			<input type="radio" name="@index-impact-@vul" id="@vul-i-5" value="5" required>
-																			<label class="text-info" for="@vul-i-5" data-debt-amount="Very High"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@index-@vul-i-1" value="1" required>
+																			<label class="text-info" for="@index-@vul-i-1" data-debt-amount="Very Low"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@index-@vul-i-2" value="2" required>
+																			<label class="text-info" for="@index-@vul-i-2" data-debt-amount="Low"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@index-@vul-i-3" value="3" required>
+																			<label class="text-info" for="@index-@vul-i-3" data-debt-amount="Medium"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@index-@vul-i-4" value="4" required>
+																			<label class="text-info" for="@index-@vul-i-4" data-debt-amount="High"></label>
+																			<input type="radio" name="@index-impact-@vul" id="@index-@vul-i-5" value="5" required>
+																			<label class="text-info" for="@index-@vul-i-5" data-debt-amount="Very High"></label>
 																			<div class="bg-info" id="debt-amount-pos"></div>
 																		</div>
 																	</form>
