@@ -239,6 +239,12 @@ namespace Cs_Risk_Assessment.Controllers
 				.ToListAsync();
 			return View(assessments.Any() ? assessments : new List<AssessmentViewModel>());
 		}
+
+		[HttpGet]
+		public IActionResult AssessmentDetails()
+		{
+			return View();
+		}
 	}
 
 }

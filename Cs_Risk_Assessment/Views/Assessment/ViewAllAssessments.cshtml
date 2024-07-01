@@ -26,7 +26,7 @@
 					@foreach(var assessment in Model)
 					{
 						<tr>
-							<td>@assessment.Name</td>
+							<td><a href="/Assessment/AssessmentDetails">@assessment.Name</a></td>
 							<td>@assessment.AssetsCount</td>
 							<td><span class="badge bg-success">Completed</span></td>
 						</tr>
