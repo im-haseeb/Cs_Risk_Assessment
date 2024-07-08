@@ -19,7 +19,8 @@
 					<tr>
 						<th>Name</th>
 						<th class="d-none d-xl-table-cell">Total Assets</th>
-						<th class="d-none d-xl-table-cell">Status</th>
+						<th class="d-none d-xl-table-cell">Risk Assessment</th>
+						<th class="d-none d-xl-table-cell">Risk Treatment</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -28,7 +29,9 @@
 						<tr>
 							<td><a href="/Assessment/AssessmentDetails/@assessment.Id">@assessment.Name</a></td>
 							<td>@assessment.AssetsCount</td>
-							<td><span class="badge bg-success">Completed</span></td>
+							<td><a href="/Assessment/DetailRiskAssessment/@assessment.Id">View Detailed Risk Assessment</a></td>
+							<td><a href="/Assessment/ControlRecomendations/@assessment.Id">View Control Recommendation</a></td>
+							@* <td><span class="badge bg-success">Completed</span></td> *@
 						</tr>
 					}
 					

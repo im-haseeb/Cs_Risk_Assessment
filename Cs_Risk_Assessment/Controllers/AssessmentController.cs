@@ -84,7 +84,7 @@ namespace Cs_Risk_Assessment.Controllers
 		[HttpPost]
 		public IActionResult ProcessStep1([FromBody] List<AssetsViewModel> formData)
 		{
-			if(!formData.Any())
+			if (!formData.Any())
 			{
 				return BadRequest("No form data provided."); // 400 Bad Request
 			}
@@ -106,9 +106,9 @@ namespace Cs_Risk_Assessment.Controllers
 			return Ok(); // 200 OK
 		}
 
-        [HttpPost]
-        public async Task<IActionResult> ProcessStep3([FromBody] List<AssetsViewModelWithThreatsAndVulnerabilities> formData)
-        {
+		[HttpPost]
+		public async Task<IActionResult> ProcessStep3([FromBody] List<AssetsViewModelWithThreatsAndVulnerabilities> formData)
+		{
 			if (!formData.Any())
 			{
 				return BadRequest("No form data provided."); // 400 Bad Request
@@ -167,16 +167,16 @@ namespace Cs_Risk_Assessment.Controllers
 						newAsset.Owner = asset.Owner;
 						newAsset.AssessmentId = newAssessment.Id;
 
-						
+
 						foreach (var threat in asset.Threats)
 						{
 							var newThreat = new Threat();
 							newThreat.Name = threat.Threat;
 							newThreat.AssetId = newAsset.Id;
 
-							foreach(var vul in threat.Vulnerabilities)
+							foreach (var vul in threat.Vulnerabilities)
 							{
-								
+
 								var vulObj = formData[index];
 
 								var newVul = new Vulnerability();
@@ -206,8 +206,8 @@ namespace Cs_Risk_Assessment.Controllers
 							throw;
 						}
 					}
-					
-					
+
+
 				}
 				return Json(new { success = true, message = "Assessment created successfully." });
 			}
@@ -230,8 +230,8 @@ namespace Cs_Risk_Assessment.Controllers
 			}
 			var assessments = await _context.Assessments
 				.Where(x => x.UserId == user.Id)
-				.OrderByDescending(x=> x.DateCreated)
-				.Select(x=> new AssessmentViewModel
+				.OrderByDescending(x => x.DateCreated)
+				.Select(x => new AssessmentViewModel
 				{
 					Id = x.Id,
 					Name = x.Name,
@@ -244,38 +244,38 @@ namespace Cs_Risk_Assessment.Controllers
 		[HttpGet]
 		public async Task<IActionResult> AssessmentDetails(Guid Id)
 		{
-            var user = await _userManager.GetUserAsync(User);
+			var user = await _userManager.GetUserAsync(User);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-            var assessmentDetails = await _context.Assessments
-				.Include(x=> x.Assets)
-					.ThenInclude(x=> x.Threats)
-						.ThenInclude(x=> x.Vulnerabilities)
-                .Where(x => x.UserId == user.Id && x.Id == Id)
-                .FirstOrDefaultAsync();
+			if (user == null)
+			{
+				return NotFound();
+			}
+			var assessmentDetails = await _context.Assessments
+				.Include(x => x.Assets)
+					.ThenInclude(x => x.Threats)
+						.ThenInclude(x => x.Vulnerabilities)
+				.Where(x => x.UserId == user.Id && x.Id == Id)
+				.FirstOrDefaultAsync();
 
 			var response = new ViewAssessmentDetailsDto();
 
 			var listOfVul = assessmentDetails.Assets.SelectMany(x => x.Threats.SelectMany(x => x.Vulnerabilities)).ToList();
 			var ListofThreats = assessmentDetails.Assets.SelectMany(x => x.Threats).ToList();
 
-			response.CriticalCount = listOfVul.Count(x=> (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) >= 20 );
-			response.HighCount = listOfVul.Count(x=> (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) >= 13 &&
-            (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) <= 19);
+			response.CriticalCount = listOfVul.Count(x => (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) >= 20);
+			response.HighCount = listOfVul.Count(x => (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) >= 13 &&
+			(Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) <= 19);
 			response.ThreatsCount = ListofThreats.Count();
 
 
-            var Top5Data = await _context.Assessments
+			var Top5Data = await _context.Assessments
 											.Include(x => x.Assets)
 												.ThenInclude(x => x.Threats)
 													.ThenInclude(x => x.Vulnerabilities)
 											.Where(x => x.UserId == user.Id)
 											.ToListAsync();
 
-            var top5Vul = Top5Data
+			var top5Vul = Top5Data
 									.SelectMany(x => x.Assets.SelectMany(x => x.Threats.SelectMany(x => x.Vulnerabilities)))
 									.GroupBy(v => v.vul) // Group by vulnerability name
 									.OrderByDescending(g => g.Count()) // Order by the count of each group in descending order
@@ -283,20 +283,47 @@ namespace Cs_Risk_Assessment.Controllers
 									.Select(g => new Top5Vul { name = g.Key, usage = g.Count() }) // Select the vulnerability name and count
 									.ToList();
 
-            var top5Threats = Top5Data
-                                    .SelectMany(x => x.Assets.SelectMany(x => x.Threats))
-                                    .GroupBy(threat => threat.Name) // Group by vulnerability name
-                                    .OrderByDescending(g => g.Count()) // Order by the count of each group in descending order
-                                    .Take(5) // Take the top 5 groups
-                                    .Select(g => new Top5Threat { name = g.Key, usage = g.Count() }) // Select the vulnerability name and count
-                                    .ToList();
+			var top5Threats = Top5Data
+									.SelectMany(x => x.Assets.SelectMany(x => x.Threats))
+									.GroupBy(threat => threat.Name) // Group by vulnerability name
+									.OrderByDescending(g => g.Count()) // Order by the count of each group in descending order
+									.Take(5) // Take the top 5 groups
+									.Select(g => new Top5Threat { name = g.Key, usage = g.Count() }) // Select the vulnerability name and count
+									.ToList();
 
-            response.Top5Vuls = top5Vul;
-            response.top5Threats = top5Threats;
+			response.Top5Vuls = top5Vul;
+			response.top5Threats = top5Threats;
 
 
-            return View(response);
-        }
+			return View(response);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> DetailRiskAssessment(Guid Id)
+		{
+			var assessmentDetails = await _context.Assessments
+					.Include(x => x.Assets)
+						.ThenInclude(x => x.Threats)
+							.ThenInclude(x => x.Vulnerabilities)
+					.Where(x => x.Id == Id)
+					.FirstOrDefaultAsync();
+
+			return View(assessmentDetails);
+		}
+		[HttpGet]
+		public async Task<IActionResult> ControlRecomendations(Guid Id)
+		{
+			var assessmentDetails = await _context.Assessments
+					.Include(x => x.Assets)
+						.ThenInclude(x => x.Threats)
+							.ThenInclude(x => x.Vulnerabilities)
+					.Where(x => x.Id == Id)
+					.FirstOrDefaultAsync();
+
+			return View(assessmentDetails);
+		}
 	}
 
+
+	
 }

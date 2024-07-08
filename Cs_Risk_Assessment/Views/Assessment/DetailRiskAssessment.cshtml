@@ -1,0 +1,129 @@
+﻿@model Cs_Risk_Assessment.Models.Assessment
+
+@{
+	ViewData["Title"] = "Detail Risk Assessment";
+	Layout = "~/Views/Shared/_templateLayout.cshtml";
+}
+
+
+@section OtherHeadContent {
+	<style>
+		table {
+			/* width: 200px; */
+			border-collapse: collapse;
+			border: 1px solid #000;
+			
+		}
+
+		th, td {
+			/* padding: 8px; */
+			text-align: left;
+			border: 1px solid #000;
+		}
+
+		/* th {
+			background-color: #f2f2f2;
+		} */
+	</style>
+}
+
+<h1 class="h3 mb-3"><strong>Detailed</strong> Risk Assessment</h1>
+
+<div class="row">
+	<div class="col-12 col-lg-12 col-xxl-9 d-flex">
+		<div class="card flex-fill">
+			<table style="width:100%;">
+				<thead>
+					<tr style="height:10px">
+						<th style="width:2%">S.No</th>
+						<th style="width:10%">Asset</th>
+						<th style="width:10%">Asset Type</th>
+						<th style="width:10%">Reference/Details of the Asset</th>
+						<th>Threats</th>
+						
+					</tr>
+				</thead>
+				<tbody>
+					@{
+						int index = 0;
+					}
+					@foreach(var threat in Model.Assets.SelectMany(x=> x.Threats))
+					{
+						index++;
+						<tr>
+							<td>@index</td>
+							<td>@threat.Asset.Name</td>
+							<td>@threat.Asset.Type</td>
+							<td>@threat.Asset.Reference</td>
+							<td>@threat.Name</td>
+							<td>
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Vulnerabilities</th>
+											<th>Likelihood</th>
+											<th>Imapct</th>
+											<th>OverAll Risk Score</th>
+										</tr>
+									</thead>
+									<tbody>
+									@foreach (var vul in threat.Vulnerabilities)
+									{
+											@* var total = Convert.ToInt32(vul.Impact) * Convert.ToInt32(vul.LikeliHood);
+											<tr>
+											<td>@vul.vul</td>
+											<td>@vul.LikeliHood</td>
+											<td>@vul.Impact</td>
+											@if(total >= 20 && total <= 25)
+											{
+												<td style="color:red">@total</td>
+											}
+											@if (total >= 13 && total <= 19)
+												{
+													<td style="color:orange">@total</td>
+												}
+												@if (total >= 6 && total <= 12)
+												{
+													<td style="color:yellow">@total</td>
+												}
+												@if (total >= 1 && total <= 5)
+												{
+													<td style="color:green">@total</td>
+												}
+											</tr> *@
+
+											var total = Convert.ToInt32(vul.Impact) * Convert.ToInt32(vul.LikeliHood);
+											var color = "white";
+											@if (total >= 20 && total <= 25)
+											{
+												color = "red";
+											}
+											@if (total >= 13 && total <= 19)
+											{
+												color = "orange";
+											}
+											@if (total >= 6 && total <= 12)
+											{
+												color = "yellow";
+											}
+											@if (total >= 1 && total <= 5)
+											{
+												color = "green";
+											}
+											<tr style="background-color:@color">
+												<td style="color:white">@vul.vul</td>
+												<td style="color:white">@vul.LikeliHood</td>
+												<td style="color:white">@vul.Impact</td>
+												<td style="color:white">@total</td>
+											</tr>
+									}
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
