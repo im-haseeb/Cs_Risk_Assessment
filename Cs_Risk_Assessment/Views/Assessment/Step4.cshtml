@@ -346,6 +346,7 @@ form + button:focus::before {
 										<table class="mt-2 vulnerabilityTable">
 												<thead>
 													<tr>
+														<th>Threat</th>
 														<th>Vulnerabilities</th>
 														<th>Likeyhood & Imapct</th>
 													</tr>
@@ -360,6 +361,7 @@ form + button:focus::before {
 														index += 1;
 														<tr>
 
+														<td>@threat.Threat</td>
 														<td name="vulnerability">@vul</td>
 															<td class="w-100">
 															<div class="mb-5 LikeHoodForm" id="form-wrapper1">
