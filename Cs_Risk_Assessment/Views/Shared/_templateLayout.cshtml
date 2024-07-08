@@ -1,18 +1,13 @@
 ﻿
 @using System.Security.Claims
-
+@using Newtonsoft.Json
 
 @{
-	var fullName = User.FindFirstValue("LoggedInUserName");
+	string fullName = User?.FindFirstValue("LoggedInUserName") ?? "Guest";
+
 	string currentController = ViewContext.RouteData.Values["controller"].ToString();
 	string currentAction = ViewContext.RouteData.Values["action"].ToString();
 }
-
-@* @foreach (var claim in User.Claims)
-{
-	<p>@claim.Type: @claim.Value</p>
-} *@
-
 
 
 <!DOCTYPE html>
@@ -50,19 +45,20 @@
 						Pages
 					</li>
 
-					<li class="sidebar-item @(currentController == "Home" ? "active" : "")">
+					<li class="sidebar-item">
+					@* <li class="sidebar-item @(currentController == "Home" ? "active" : "")"> *@
 						<a class="sidebar-link" href="/">
 							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
 						</a>
 					</li>
 
-					<li class="sidebar-item @((currentController == "Assessment" && currentAction == "Index") ? " active" : "" )">
+					<li class="sidebar-item">
 						<a class="sidebar-link" href="/Assessment">
 							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Create Assessement</span>
 						</a>
 					</li>
 
-					<li class="sidebar-item @((currentController == "Assessment" && currentAction == "ViewAllAssessments") ? " active" : "" )">
+					<li class="sidebar-item @((currentController == "Assessment" && (currentAction == "ViewAllAssessments" || currentAction == "AssessmentDetails")) ? " active" : "" )">
 						<a class="sidebar-link" href="/Assessment/ViewAllAssessments">
 							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">View Assessements</span>
 						</a>

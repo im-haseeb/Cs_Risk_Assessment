@@ -233,6 +233,7 @@ namespace Cs_Risk_Assessment.Controllers
 				.OrderByDescending(x=> x.DateCreated)
 				.Select(x=> new AssessmentViewModel
 				{
+					Id = x.Id,
 					Name = x.Name,
 					AssetsCount = x.Assets.Count(),
 				})
@@ -241,10 +242,61 @@ namespace Cs_Risk_Assessment.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult AssessmentDetails()
+		public async Task<IActionResult> AssessmentDetails(Guid Id)
 		{
-			return View();
-		}
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var assessmentDetails = await _context.Assessments
+				.Include(x=> x.Assets)
+					.ThenInclude(x=> x.Threats)
+						.ThenInclude(x=> x.Vulnerabilities)
+                .Where(x => x.UserId == user.Id && x.Id == Id)
+                .FirstOrDefaultAsync();
+
+			var response = new ViewAssessmentDetailsDto();
+
+			var listOfVul = assessmentDetails.Assets.SelectMany(x => x.Threats.SelectMany(x => x.Vulnerabilities)).ToList();
+			var ListofThreats = assessmentDetails.Assets.SelectMany(x => x.Threats).ToList();
+
+			response.CriticalCount = listOfVul.Count(x=> (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) >= 20 );
+			response.HighCount = listOfVul.Count(x=> (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) >= 13 &&
+            (Convert.ToInt32(x.LikeliHood) * Convert.ToInt32(x.Impact)) <= 19);
+			response.ThreatsCount = ListofThreats.Count();
+
+
+            var Top5Data = await _context.Assessments
+											.Include(x => x.Assets)
+												.ThenInclude(x => x.Threats)
+													.ThenInclude(x => x.Vulnerabilities)
+											.Where(x => x.UserId == user.Id)
+											.ToListAsync();
+
+            var top5Vul = Top5Data
+									.SelectMany(x => x.Assets.SelectMany(x => x.Threats.SelectMany(x => x.Vulnerabilities)))
+									.GroupBy(v => v.vul) // Group by vulnerability name
+									.OrderByDescending(g => g.Count()) // Order by the count of each group in descending order
+									.Take(5) // Take the top 5 groups
+									.Select(g => new Top5Vul { name = g.Key, usage = g.Count() }) // Select the vulnerability name and count
+									.ToList();
+
+            var top5Threats = Top5Data
+                                    .SelectMany(x => x.Assets.SelectMany(x => x.Threats))
+                                    .GroupBy(threat => threat.Name) // Group by vulnerability name
+                                    .OrderByDescending(g => g.Count()) // Order by the count of each group in descending order
+                                    .Take(5) // Take the top 5 groups
+                                    .Select(g => new Top5Threat { name = g.Key, usage = g.Count() }) // Select the vulnerability name and count
+                                    .ToList();
+
+            response.Top5Vuls = top5Vul;
+            response.top5Threats = top5Threats;
+
+
+            return View(response);
+        }
 	}
 
 }

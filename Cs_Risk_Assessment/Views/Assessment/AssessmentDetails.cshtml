@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@model Cs_Risk_Assessment.ViewModels.ViewAssessmentDetailsDto
+
+@{
 	ViewData["Title"] = "Assessment Details";
 	Layout = "~/Views/Shared/_templateLayout.cshtml";
 }
@@ -13,25 +16,25 @@
 	<div class="col-4">
 		<div class="card text-white mb-3" style="max-width: 18rem; background-color:#db8770">
 			<div class="card-body my-auto text-dark">
-				<span style="font-size:35px">23</span> <span>CRITICAL</span>
+				<span style="font-size:35px">@Model.CriticalCount</span> <span>CRITICAL</span>
 			</div>
 		</div>
 	</div>
 	<div class="col-4">
 		<div class="card text-white mb-3" style="max-width: 18rem; background-color:#ebd160">
 			<div class="card-body my-auto text-dark">
-				<span style="font-size:35px">170</span> <span>HIGH</span>
+				<span style="font-size:35px">@Model.HighCount</span> <span>HIGH</span>
 			</div>
 		</div>
 	</div>
 	<div class="col-4">
 		<div class="card text-white mb-3" style="max-width: 18rem; background-color:white">
 			<div class="card-body my-auto text-dark">
-				<span style="font-size:25px">193/3010</span> <span>Threats</span>
-				<div class="progress">
+				<span style="font-size:35px">@Model.ThreatsCount</span> <span>Threats</span>
+				@* <div class="progress">
 					<div class="progress-bar" role="progressbar" style="width: 15%; background-color: #db8770" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
 					<div class="progress-bar" role="progressbar" style="width: 30%; background-color: #ebd160" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-				</div>
+				</div> *@
 
 			</div>
 		</div>
@@ -39,17 +42,17 @@
 </div>
 
 <div class="row">
-	<div class="col-6">
+	<div class="col-12">
 		<div class="card" >
 			<div class="card-body">
-				<canvas id="vulchart"></canvas>
+                <canvas id="vulchart" width="800" height="200"></canvas>
 			</div>
 		</div>
 	</div>
-	<div class="col-6">
+	<div class="col-12">
 		<div class="card">
 			<div class="card-body">
-				<canvas id="riskchart"></canvas>
+                <canvas id="riskchart" width="800" height="200"></canvas>
 			</div>
 		</div>
 	</div>
@@ -70,15 +73,15 @@
     <script>
         const ctx = document.getElementById('vulchart');
 
+        var top5Vuls = @Html.Raw(JsonConvert.SerializeObject(Model.Top5Vuls.Select(v => v.name).ToList()));
+
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Climate', 'Cognition/Awareness', 'Security Behaviour', 'Attitude', 'Competency', 'Compliance', 'Communication and Collaboration', 'Responsibility'],
+                labels: top5Vuls,
                 datasets: [{
-                    label: '', // Removed unnecessary array brackets around an empty string
-                    data: [
-        1,2,3,3,3,5,5,6,
-                    ],
+                    label: 'Top 5 Vulnerbilities',
+                    data: @Html.Raw(JsonConvert.SerializeObject(Model.Top5Vuls.Select(v => v.usage).ToList())),
                     borderWidth: 1,
                 }]
             },
@@ -86,27 +89,13 @@
                 indexAxis: 'y',
                 scales: {
                     y: {
-                        // beginAtZero: true,
-                        stacked: true // Added stacked option to display bars horizontally
+                        stacked: true
                     },
-                    x: { // Added x-axis configuration for clarity
+                    x: { 
                         stacked: true,
-                        // max: 100,
-                        // beginAtZero: true,
 
                     }
                 },
-
-                // plugins: {
-                //     datalabels: {
-                //         anchor: 'end',
-                //         align: 'end',
-                //         color: 'black',
-                //         formatter: function (value, context) {
-                //             return value;
-                //         }
-                //     }
-                // }
             },
             plugins: [ChartDataLabels],
         });
@@ -118,14 +107,21 @@
     <script>
         const ctx2 = document.getElementById('riskchart');
 
+        var top5Threats = @Html.Raw(JsonConvert.SerializeObject(Model.top5Threats.Select(v => v.name).ToList()));
+        console.log(top5Vuls)
+
         new Chart(ctx2, {
             type: 'bar',
             data: {
-                labels: ['Climate', 'Cognition/Awareness', 'Security Behaviour', 'Attitude', 'Competency', 'Compliance', 'Communication and Collaboration', 'Responsibility'],
+                labels: top5Threats,
                 datasets: [{
-                    label: '', // Removed unnecessary array brackets around an empty string
-                    data: [
-                        1, 2, 3, 3, 3, 5, 5, 6,
+                    label: 'Top 5 Risks', // Removed unnecessary array brackets around an empty string
+                    data: @Html.Raw(JsonConvert.SerializeObject(Model.top5Threats.Select(v => v.usage).ToList())),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
                     ],
                     borderWidth: 1,
                 }]
