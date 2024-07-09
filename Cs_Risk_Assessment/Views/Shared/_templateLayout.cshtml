@@ -37,7 +37,7 @@
 		<nav id="sidebar" class="sidebar js-sidebar">
 			<div class="sidebar-content js-simplebar">
 				<a class="sidebar-brand" href="/">
-					<span class="align-middle">Core</span>
+					<span class="align-middle">Risk Assessment</span>
 				</a>
 
 				<ul class="sidebar-nav">
@@ -52,7 +52,7 @@
 						</a>
 					</li>
 
-					<li class="sidebar-item">
+					<li class="sidebar-item @((currentController == "Assessment" && (currentAction == "Index" || currentAction == "Step2" || currentAction == "Step3" || currentAction == "Step4")) ? " active" : "" )">
 						<a class="sidebar-link" href="/Assessment">
 							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Create Assessement</span>
 						</a>
@@ -122,7 +122,7 @@
 					<div class="row text-muted">
 						<div class="col-6 text-start">
 							<p class="mb-0">
-								<a class="text-muted" href="https://mhaseebali.com/" target="_blank"><strong>Core Identity</strong></a> - <a class="text-muted" href="https://mhaseebali.com/" target="_blank"><strong>Created By Haseeb</strong></a>								&copy;
+								<a class="text-muted" href="#" target="_blank"><strong>Core Identity</strong></a> - <a class="text-muted" href="#" target="_blank"><strong>Created By Zeeshan</strong></a>								&copy;
 							</p>
 						</div>
 						<div class="col-6 text-end">

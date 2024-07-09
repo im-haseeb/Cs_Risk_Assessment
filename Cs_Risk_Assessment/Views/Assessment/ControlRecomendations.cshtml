@@ -28,7 +28,7 @@
 	</style>
 }
 
-<h1 class="h3 mb-3"><strong>Detailed</strong> Risk Assessment</h1>
+<h1 class="h3 mb-3"><strong>Recommended</strong> Controls</h1>
 
 <div class="row">
 	<div class="col-12 col-lg-12 col-xxl-9 d-flex">
@@ -112,17 +112,31 @@
 											{
 												color = "green";
 											}
-											<tr style="background-color:@color">
-												<td style="color:white">@vul.vul</td>
-												<td style="color:white">@vul.LikeliHood</td>
-												<td style="color:white">@vul.Impact</td>
-												<td style="color:white">@total</td>
-											</tr>
+											if(color == "yellow")
+											{
+												<tr style="background-color:@color">
+													<td style="color:black">@vul.vul</td>
+													<td style="color:black">@vul.LikeliHood</td>
+													<td style="color:black">@vul.Impact</td>
+													<td style="color:black">@total</td>
+												</tr>
+											}
+											else
+											{
+												<tr style="background-color:@color">
+													<td style="color:white">@vul.vul</td>
+													<td style="color:white">@vul.LikeliHood</td>
+													<td style="color:white">@vul.Impact</td>
+													<td style="color:white">@total</td>
+												</tr>
+											}
+											
 									}
 									</tbody>
 								</table>
 							</td>
-							<td>@ApplicableControls.ThreatControlMapping[threat.Name]</td>
+							@* <td>@ApplicableControls.ThreatControlMapping[threat.Name]</td> *@
+							<td>@Html.Raw(ApplicableControls.ThreatControlMapping[threat.Name].Replace("\n", "<br />"))</td>
 						</tr>
 					}
 				</tbody>

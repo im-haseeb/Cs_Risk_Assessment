@@ -336,8 +336,12 @@ form + button:focus::before {
 							{
 								<form>
 
-								<tr>
-									<td class="w-25" name="AssetName">@item.AssetName</td>
+								<tr style="border-bottom:1px solid">
+									<td style="justify-content: start;
+    display: inline-flex;
+    border: none;"  name="AssetName">
+											@item.AssetName
+									</td>
 									@* <td name="AssetType">@item.AssetType</td>
 									<td name="Reference">@item.Reference</td>
 									<td name="Location">@item.Location</td>
@@ -366,16 +370,16 @@ form + button:focus::before {
 															<td class="w-100">
 															<div class="mb-5 LikeHoodForm" id="form-wrapper1">
 																<form class="LikeHoodForm-ss" method="GET">
-																	<h4 class="text-primary text-center">LikelyHood</h4>
+																	<h4 class="text-primary text-center">Likelihood</h4>
 																		<div id="debt-amount-slider">
 																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-1" value="1" required>
 																			<label class="text-primary" for="@index-@vul-lh-1" data-debt-amount="Highly Unlikely"></label>
 																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-2" value="2" required>
 																			<label class="text-primary" for="@index-@vul-lh-2" data-debt-amount="Unlikely"></label>
 																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-3" value="3" required>
-																			<label class="text-primary" for="@index-@vul-lh-3" data-debt-amount="Likely"></label>
+																			<label class="text-primary" for="@index-@vul-lh-3" data-debt-amount="Somewhat Likely"></label>
 																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-4" value="4" required>
-																			<label class="text-primary" for="@index-@vul-lh-4" data-debt-amount="Somewhat Likely"></label>
+																			<label class="text-primary" for="@index-@vul-lh-4" data-debt-amount="Likely"></label>
 																			<input type="radio" name="@index-likelihood-@vul" id="@index-@vul-lh-5" value="5" required>
 																			<label class="text-primary" for="@index-@vul-lh-5" data-debt-amount="Highly Likely"></label>
 																			<div class="bg-primary" id="debt-amount-pos"></div>

@@ -27,7 +27,22 @@
 	</style>
 }
 
-<h1 class="h3 mb-3"><strong>Detailed</strong> Risk Assessment</h1>
+<div class="row">
+	<div class="col-6">
+		<h1 class="h3 mb-3"><strong>Detailed</strong> Risk Assessment</h1>
+	</div>
+
+	<div class="col-6">
+		<p>
+		<b>Risk Levels</b>
+		</p>
+		<p style="margin:0">Critical/ Very High: Scores from 20 to 25</p>
+		<p style="margin:0">High: Scores from 13 to 19</p>
+		<p style="margin:0">Medium: Scores from 6 to 12</p>
+		<p>Low: Scores from 1 to 5</p>
+	</div>
+</div>
+
 
 <div class="row">
 	<div class="col-12 col-lg-12 col-xxl-9 d-flex">
@@ -94,28 +109,45 @@
 
 											var total = Convert.ToInt32(vul.Impact) * Convert.ToInt32(vul.LikeliHood);
 											var color = "white";
+											var level = "";
 											@if (total >= 20 && total <= 25)
 											{
 												color = "red";
+												level = "(Critical/ Very High)";
 											}
 											@if (total >= 13 && total <= 19)
 											{
 												color = "orange";
+												level = "(High)";
 											}
 											@if (total >= 6 && total <= 12)
 											{
 												color = "yellow";
+												level = "(Medium)";
 											}
 											@if (total >= 1 && total <= 5)
 											{
 												color = "green";
+												level = "(Low)";
 											}
-											<tr style="background-color:@color">
-												<td style="color:white">@vul.vul</td>
-												<td style="color:white">@vul.LikeliHood</td>
-												<td style="color:white">@vul.Impact</td>
-												<td style="color:white">@total</td>
-											</tr>
+											if (color == "yellow")
+											{
+												<tr style="background-color:@color">
+													<td style="color:black">@vul.vul</td>
+													<td style="color:black">@vul.LikeliHood</td>
+													<td style="color:black">@vul.Impact</td>
+													<td style="color:black">@total @level</td>
+												</tr>
+											}
+											else
+											{
+												<tr style="background-color:@color">
+													<td style="color:white">@vul.vul</td>
+													<td style="color:white">@vul.LikeliHood</td>
+													<td style="color:white">@vul.Impact</td>
+													<td style="color:white">@total @level</td>
+												</tr>
+											}
 									}
 									</tbody>
 								</table>

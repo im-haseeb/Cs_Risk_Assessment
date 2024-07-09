@@ -82,18 +82,23 @@
                 datasets: [{
                     label: 'Top 5 Vulnerbilities',
                     data: @Html.Raw(JsonConvert.SerializeObject(Model.Top5Vuls.Select(v => v.usage).ToList())),
-                    borderWidth: 1,
+                    borderWidth: 0.1,
+                    barThickness: 25
                 }]
             },
             options: {
                 indexAxis: 'y',
                 scales: {
                     y: {
-                        stacked: true
+                        stacked: true,
+                        ticks: {
+                            font: {
+                                size: 20
+                            }
+                        }
                     },
                     x: { 
                         stacked: true,
-
                     }
                 },
             },
@@ -115,7 +120,7 @@
             data: {
                 labels: top5Threats,
                 datasets: [{
-                    label: 'Top 5 Risks', // Removed unnecessary array brackets around an empty string
+                    label: 'Top 5 Risks',
                     data: @Html.Raw(JsonConvert.SerializeObject(Model.top5Threats.Select(v => v.usage).ToList())),
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -123,40 +128,28 @@
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
                     ],
-                    borderWidth: 1,
+                    borderWidth: 0.1,
+                    barThickness: 25
                 }]
             },
             options: {
                 indexAxis: 'y',
                 scales: {
                     y: {
-                        // beginAtZero: true,
-                        stacked: true // Added stacked option to display bars horizontally
+                        stacked: true ,
+                        ticks: {
+                            font: {
+                                size: 20
+                            }
+                        }
                     },
-                    x: { // Added x-axis configuration for clarity
+                    x: { 
                         stacked: true,
-                        // max: 100,
-                        // beginAtZero: true,
-
                     }
                 },
-
-                // plugins: {
-                //     datalabels: {
-                //         anchor: 'end',
-                //         align: 'end',
-                //         color: 'black',
-                //         formatter: function (value, context) {
-                //             return value;
-                //         }
-                //     }
-                // }
             },
             plugins: [ChartDataLabels],
         });
-
-
-
     </script>
 
 }
